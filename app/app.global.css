@@ -2,42 +2,63 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
-@import "~font-awesome/css/font-awesome.css";
+
+/* Normalize css styles */
+@import "~normalize.css/normalize.css";
+
+/* include locals fonts */
+@import "./assets/css/fonts.css";
 
 body {
-  position: relative;
   color: white;
   height: 100vh;
-  background-color: #232c39;
-  background-image: linear-gradient(45deg, rgba(0, 216, 255, 0.5) 10%, rgba(0, 1, 127, 0.7));
-  font-family: Arial, Helvetica, Helvetica Neue, serif;
-  overflow-y: hidden;
+  background: #000004;
+  font-family: Roboto, sans-serif;
+  overflow: hidden;
 }
 
-h2 {
-  margin: 0;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -0.025em;
-  color: #fff;
+h1, h2, h3, h4, h5, h6 {
+  font-family: Roboto, sans-serif;
 }
 
-p {
-  font-size: 24px;
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
-li {
-  list-style: none;
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
 }
 
-a {
-  color: white;
-  opacity: 0.75;
-  text-decoration: none;
+::-webkit-scrollbar-thumb {
+  background: #222222;
+  border: 0px none #ffffff;
+  border-radius: 50px;
 }
 
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-  cursor: pointer;
+::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+
+::-webkit-scrollbar-track {
+  background: #000004;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #000004;
+}
+
+::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

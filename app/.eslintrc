@@ -10,7 +10,7 @@
     "flowtype/require-parameter-type": "off",
     "flowtype/require-return-type": "off",
     "flowtype/require-valid-file-annotation": "off",
-    "flowtype/semi": ["error", "always"],
+    "flowtype/semi": "off",
     "flowtype/space-after-type-colon": ["error", "always"],
     "flowtype/space-before-generic-bracket": ["error", "never"],
     "flowtype/space-before-type-colon": ["error", "never"],

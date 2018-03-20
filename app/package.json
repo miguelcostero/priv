@@ -14,5 +14,7 @@
     "postinstall": "npm run electron-rebuild"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "webtorrent": "^0.98.24"
+  }
 }

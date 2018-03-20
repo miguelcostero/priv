@@ -1,0 +1,133 @@
+.Container
+  position: relative
+  background: transparent
+
+  .MovieContainer
+    position: relative
+    width: 100%
+    height: 100vh
+    overflow: hidden
+    background-color: rgba(grey, .5)
+    background-size: cover
+
+    section.movieInfo
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background-color: rgba(#000000, .6)
+
+      display: flex
+      align-items: center
+      justify-content: center
+
+      aside.Sidebar
+        width: 30vw
+        height: 90vh
+        display: flex
+        align-items: center
+
+        img
+          display: inline-block
+          width: 100%
+          height: 100%
+
+      .content
+        margin-left: 2.5vw
+        width: 50vw
+
+        h1.title
+          font-size: 2.5rem
+          letter-spacing: -0.03em
+          margin-top: 0
+
+        .genres
+          span
+            font-weight: 900
+            margin-left: 10px
+            text-transform: capitalize
+            background: #414141
+            padding: .5em
+            transition: background 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+            &:hover
+              background: darken(#414141, 5%)
+
+            &:first-child
+              margin-left: 0
+
+        p.description
+          margin-top: 30px
+          font-size: 1.2rem
+          font-weight: 300
+
+        .rating
+          height: 20px
+          overflow: hidden
+          display: flex
+          align-items: center
+
+          span
+            margin-left: 10px
+            font-weight: 900
+
+          span.icon
+            margin-left: 5px
+            color: #fff000
+        
+        p.dateAdded
+          font-weight: 300
+          color: #666666
+        
+        p.mpaRating
+          font-weight: 900
+        
+        p.year
+          font-weight: 900
+
+        .PlayButtons
+          display: flex
+          align-items: flex-start
+
+          a
+            text-decoration: none !important
+
+          .PlayButton
+            margin-right: 20px
+            background: #00C853
+            padding: 15px
+            padding-left: 20px
+            padding-right: 20px
+            color: #ffffff
+            font-weight: 700
+            font-size: 1.2rem
+            transition: background 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+            &:hover
+              background: #00E676
+        
+        .Screenshots
+          margin-top: 25px
+
+          .item
+            width: 350px
+            height: 150px
+
+            img
+              width: 100%
+              height: 100%
+
+  .goBack
+    position: absolute
+    top: 5px
+    left: 1vw
+    z-index: 999
+
+    a
+      color: #ffffff
+      font-size: 3rem
+      transition: color 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+      &:hover 
+        color: darken(#ffffff, 15%)

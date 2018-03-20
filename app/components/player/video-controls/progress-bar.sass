@@ -1,0 +1,32 @@
+.ProgressBarContainer
+  position: relative
+  align-self: stretch
+  width: 100%
+  height: 5px
+  display: flex
+  align-items: center
+  justify-content: center
+  outline: 0
+  cursor: pointer
+
+  .ProgressBar
+    background-color: rgba(white, .2)
+    width: 100%
+    height: 100%
+    overflow: hidden
+
+    .CurrentTimeBar, .CurrentDownloadedBar
+      position: absolute
+      top: 0
+      left: 0
+      width: 0
+      height: 100%
+      transition: width 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+    .CurrentTimeBar
+      background-color: #e74c3c
+      z-index: 3
+    
+    .CurrentDownloadedBar
+      background-color: rgba(white, .6)
+      z-index: 2

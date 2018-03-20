@@ -4,11 +4,15 @@ import { Switch, Route } from 'react-router';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
 import CounterPage from './containers/CounterPage';
+import MovieDetailsPage from './containers/MovieDetailsPage';
+import PlayerPage from './containers/PlayerPage';
 
 export default () => (
   <App>
     <Switch>
-      <Route path="/counter" component={CounterPage} />
+      <Route path="/counter" component={CounterPage} exact />
+      <Route path="/movie/:id" component={MovieDetailsPage} />
+      <Route path="/player/:movieId/:hash" component={PlayerPage} />
       <Route path="/" component={HomePage} />
     </Switch>
   </App>
