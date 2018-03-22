@@ -1,9 +1,5 @@
 // @flow
-import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../actions/counter';
-
-export type counterStateType = {
-  +counter: number
-};
+import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../action-types';
 
 type actionType = {
   +type: string

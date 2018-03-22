@@ -1,12 +1,10 @@
 // @flow
-import type { counterStateType } from '../reducers/counter';
+import type { counterStateType } from '../types/counterState';
+import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../action-types';
 
 type actionType = {
   +type: string
 };
-
-export const INCREMENT_COUNTER = 'INCREMENT_COUNTER';
-export const DECREMENT_COUNTER = 'DECREMENT_COUNTER';
 
 export function increment() {
   return {

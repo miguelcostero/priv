@@ -4,6 +4,7 @@ import zlib from 'zlib';
 import path from 'path';
 import fs from 'fs';
 import * as Subtitle from 'subtitle';
+import iconv from 'iconv-lite';
 import { downloadPath } from '../config/cache';
 
 type Video = {
@@ -29,7 +30,7 @@ export default async function ChangeSubtitle(selectedSubtitle: SelectedSubtitle,
   const videoFolder = path.resolve(downloadPath, video.path.replace(video.name, ''));
   const filename = `${selectedSubtitle.langcode}.vtt`;
 
-  await createSubFile(buffer, videoFolder, filename);
+  await createSubFile(buffer, videoFolder, filename, selectedSubtitle.encoding);
 
   return {
     src: path.resolve(videoFolder, filename),
@@ -59,9 +60,10 @@ function getSubBuffer(zip) {
   });
 }
 
-function createSubFile(buffer, subPath: string, filename: string) {
+function createSubFile(buffer, subPath: string, filename: string, encoding: string) {
   return new Promise((resolve, reject) => {
-    const substitle = Subtitle.parse(buffer.toString());
+    const decoded = iconv.decode(buffer, encoding);
+    const substitle = Subtitle.parse(decoded);
     const vttString = Subtitle.stringifyVtt(substitle);
 
     fs.writeFile(path.resolve(subPath, filename), vttString, err => {

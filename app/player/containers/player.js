@@ -1,22 +1,41 @@
 // @flow
 import React, { Component } from 'react';
 import WebTorrent from 'webtorrent';
-import axios from 'axios';
 import path from 'path';
-import { Link } from 'react-router-dom';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faArrowAltCircleLeft } from '@fortawesome/fontawesome-free-solid';
 import OpenSubtitles from 'opensubtitles-api';
 import changeSubtitle from '../../utils/changeSubtitle';
-import Video from './video/Video';
-import Controls from './video-controls/VideoControls';
+import Video from '../components/video';
+import Controls from '../components/controls';
 import api from '../../config/api';
 import { downloadPath } from '../../config/cache';
-import styles from './Player.sass';
+import PlayerLayout from '../components/player-layout';
+import PlayPause from '../components/play-pause';
+import FullScreen from '../components/full-screen';
+import ProgressBar from '../components/progress-bar';
+import Volume from '../components/volume';
+import Timer from '../components/timer';
+import Subtitles from '../components/subtitles';
+import GoBack from '../components/go-back';
+import Title from '../components/title';
+import ControlButtonsLayout from '../components/buttons-layout';
+import Left from '../components/buttons-left-layout';
+import Right from '../components/buttons-right-layout';
+import PlayerInfoLayout from '../components/player-info-layout';
 
 type Props = {
-  movieId: string,
-  movieHash: string
+  match: {
+    params: {
+      hash: string
+    }
+  },
+  movie: {
+    id: number,
+    title: string,
+    subtitles: {}
+  },
+  actions: {
+    updateCurrentMovieSubtitles: (movie) => void
+  }
 };
 
 export default class Player extends Component<Props> {
@@ -30,8 +49,6 @@ export default class Player extends Component<Props> {
       duration: 0,
       currentTime: 0,
     },
-    movie: {},
-    subtitles: {},
     currentSubtitle: {
       src: '',
       srcLang: '',
@@ -47,9 +64,7 @@ export default class Player extends Component<Props> {
   }
 
   componentDidMount() {
-    console.log(this.OpenSub, 'OpenSubtitles');
-
-    const torrentUrl = `${api.torrent}/${this.props.movieHash}`;
+    const torrentUrl = `${api.torrent}/${this.props.match.params.hash}`;
     const options = {
       path: downloadPath
     };
@@ -67,12 +82,14 @@ export default class Player extends Component<Props> {
       console.log(video, 'VIDEO');
       this.OpenSub.search({
         path: path.resolve(downloadPath, video.path),
+        imdbid: this.state.video.imdb_code,
         gzip: true
       }).then(subtitles => {
         console.log(subtitles, 'SUBTITLES');
-        this.setState({
+        const movie = Object.assign(this.props.movie, {
           subtitles
         });
+        this.props.actions.updateCurrentMovieSubtitles(movie);
         return true;
       }).catch(err => console.error(err, 'OPEN SUBTITLES ERROR SEARCH'));
 
@@ -93,18 +110,6 @@ export default class Player extends Component<Props> {
     this.client.on('error', err => {
       console.error(err, 'ERROR ON WEBTORRENT CLIENT');
     });
-
-    axios.get(`${api.url}/movie_details.json`, {
-      params: {
-        movie_id: this.props.movieId
-      }
-    }).then(res => {
-      this.setState({
-        movie: res.data.data.movie
-      });
-      document.title = `${this.state.movie.title_long} - Priv`;
-      return true;
-    }).catch(err => console.error(err, 'ERROR'));
   }
 
   componentWillUnmount() {
@@ -237,8 +242,7 @@ export default class Player extends Component<Props> {
   }
 
   handleSubtitleChange = event => {
-    console.log(event, 'SUBTITLE CHANGED');
-    const selectedSubtitle = this.state.subtitles[event.target.value];
+    const selectedSubtitle = this.props.movie.subtitles[event.target.value];
 
     changeSubtitle(selectedSubtitle, {
       name: this.state.videoName,
@@ -252,73 +256,66 @@ export default class Player extends Component<Props> {
   }
 
   render() {
-    const { currentSubtitle } = this.state;
-
     return (
-      <div
-        className={styles.Container}
-        onDoubleClick={this.handleFullScreenClick}
-        ref={this.setRefPlayer}
+      <PlayerLayout
+        handleDoubleClick={this.handleFullScreenClick}
+        setRef={this.setRefPlayer}
       >
-        <div
-          className={styles.wrapper}
-          style={
-            (this.state.showInfo || this.state.pause) ?
-              { opacity: 1 }
-            :
-              { opacity: 0 }
-          }
+        <PlayerInfoLayout
+          opacity={(this.state.showInfo || this.state.pause) ? 1 : 0}
         >
-          <div
-            className={styles.goBack}
-          >
-            <Link to={`/movie/${this.props.movieId}`}>
-              <FontAwesomeIcon icon={faArrowAltCircleLeft} />
-            </Link>
-          </div>
-          <div
-            className={styles.Details}
-          >
-            <p>{this.state.movie.title_long}</p>
-          </div>
-
-          <Controls
-            downloaded={this.state.data.progress}
-            className={styles.controls}
-            pause={this.state.pause}
-            togglePlay={this.togglePlay}
-            handleFullScreenClick={this.handleFullScreenClick}
-            currentTime={this.state.video.currentTime}
-            videoDuration={this.state.video.duration}
-            handleVolumeChange={this.handleVolumeChange}
-            volumeStatus={this.state.volumeStatus}
-            toggleMute={this.toggleMute}
-            getRefVolumeRange={this.getRefVolumeRange}
-            handleProgressChange={this.handleProgressChange}
-            getProgressBarRef={this.getProgressBarRef}
-            subtitles={this.state.subtitles}
-            handleSubtitleChange={this.handleSubtitleChange}
-            currentSubtitle={currentSubtitle}
-          />
-        </div>
-        <div
-          className={styles.PlayerWrapper}
-          onClick={this.togglePlay}
-          onKeyUp={this.handleKeyUpToTogglePlay}
-          role="button"
-          tabIndex="0"
-        >
-          <Video
-            setRef={this.setRef}
-            autoplay
-            controls={false}
-            handleMouseMove={this.handleMouseMove}
-            handleMouseLeave={this.handleMouseLeave}
-            handleTimeUpdate={this.handleTimeUpdate}
-            subtitle={this.state.currentSubtitle}
-          />
-        </div>
-      </div>
+          <GoBack path={`/movie/${this.props.movie.id}`} />
+          <Title title={this.props.movie.title} />
+          <Controls>
+            <ControlButtonsLayout>
+              <ProgressBar
+                currentTime={this.state.video.currentTime}
+                videoDuration={this.state.video.duration}
+                downloaded={this.state.data.progress * 100}
+                handleProgressChange={this.handleProgressChange}
+                setRef={this.getProgressBarRef}
+              />
+              <Left>
+                <PlayPause
+                  pause={this.state.pause}
+                  handleClick={this.togglePlay}
+                />
+                <Volume
+                  handleVolumeChange={this.handleVolumeChange}
+                  status={this.state.volumeStatus}
+                  toggleMute={this.toggleMute}
+                  setRef={this.getRefVolumeRange}
+                />
+                <Timer
+                  duration={this.state.video.duration}
+                  currentTime={this.state.video.currentTime}
+                />
+              </Left>
+              <Right>
+                <Subtitles
+                  subtitles={this.props.movie.subtitles || {}}
+                  handleChange={this.handleSubtitleChange}
+                  currentSubtitle={this.state.currentSubtitle}
+                />
+                <FullScreen
+                  handleClick={this.handleFullScreenClick}
+                />
+              </Right>
+            </ControlButtonsLayout>
+          </Controls>
+        </PlayerInfoLayout>
+        <Video
+          setRef={this.setRef}
+          autoplay
+          controls={false}
+          handleMouseMove={this.handleMouseMove}
+          handleMouseLeave={this.handleMouseLeave}
+          handleTimeUpdate={this.handleTimeUpdate}
+          handleClick={this.togglePlay}
+          handleKeyUp={this.handleKeyUpToTogglePlay}
+          subtitle={this.state.currentSubtitle}
+        />
+      </PlayerLayout>
     );
   }
 }
