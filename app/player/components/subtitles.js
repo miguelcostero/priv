@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './subtitles.sass';
 
 type Props = {
-  subtitles: {},
+  subtitles: [],
   handleChange: () => void,
   currentSubtitle: {
     srcLang: string
@@ -19,12 +19,12 @@ export default function Subtitles(props: Props) {
       >
         <option value="" disabled>--subtitles--</option>
         {
-          Object.keys(props.subtitles).map(key => (
+          props.subtitles.map(subtitle => (
             <option
-              value={props.subtitles[key].langcode}
-              key={key}
+              value={subtitle.langShort}
+              key={subtitle.uuid}
             >
-              {props.subtitles[key].lang}
+              {subtitle.lang.replace(/\b\w/g, l => l.toUpperCase())}
             </option>
           ))
         }

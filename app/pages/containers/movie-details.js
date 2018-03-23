@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import * as _ from 'lodash';
-import * as MovieDetailsActions from '../../actions/movie-details';
+import * as Actions from '../../actions';
 import MovieDetailsLayout from '../components/movie-details-layout';
 import GoBack from '../components/go-back';
 import MovieDetails from '../components/movie-details';
@@ -30,11 +30,13 @@ class MovieDetailsPage extends Component<Props> {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (this.props.movie.id !== nextProps.movie.id) {
-      return true;
+    if (this.props.movie) {
+      if (this.props.movie.id === nextProps.movie.id) {
+        return false;
+      }
     }
 
-    return false;
+    return true;
   }
 
   render() {
@@ -59,7 +61,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(MovieDetailsActions, dispatch)
+    actions: bindActionCreators(Actions, dispatch)
   };
 }
 

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Player from '../../player/containers/player';
-import * as PlayerActions from '../../actions/player';
+import * as Actions from '../../actions';
 
 function mapStateToProps(state) {
   return {
@@ -13,7 +13,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(PlayerActions, dispatch)
+    actions: bindActionCreators(Actions, dispatch)
   };
 }
 

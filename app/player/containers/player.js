@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import WebTorrent from 'webtorrent';
 import path from 'path';
-import OpenSubtitles from 'opensubtitles-api';
-import changeSubtitle from '../../utils/changeSubtitle';
+import uuid from 'uuid/v4';
+import yifysubtitles from 'yifysubtitles';
 import Video from '../components/video';
 import Controls from '../components/controls';
+import langs from '../../config/langs.json';
 import api from '../../config/api';
 import { downloadPath } from '../../config/cache';
 import PlayerLayout from '../components/player-layout';
@@ -31,10 +32,12 @@ type Props = {
   movie: {
     id: number,
     title: string,
+    imdb_code: string,
     subtitles: {}
   },
   actions: {
-    updateCurrentMovieSubtitles: (movie) => void
+    updateCurrentMovie: (movie) => void,
+    isLoading: (active: boolean) => void
   }
 };
 
@@ -43,8 +46,6 @@ export default class Player extends Component<Props> {
   state = {
     pause: false,
     volumeStatus: 'off',
-    videoPath: null,
-    videoName: null,
     video: {
       duration: 0,
       currentTime: 0,
@@ -64,6 +65,8 @@ export default class Player extends Component<Props> {
   }
 
   componentDidMount() {
+    this.props.actions.isLoading(true);
+    this.togglePlay();
     const torrentUrl = `${api.torrent}/${this.props.match.params.hash}`;
     const options = {
       path: downloadPath
@@ -73,27 +76,36 @@ export default class Player extends Component<Props> {
 
     this.client.on('torrent', torrent => {
       const video = torrent.files.find(file => file.name.endsWith('.mp4'));
-
-      this.setState({
-        videoName: video.name,
-        videoPath: video.path
-      });
+      const videoPath = path.resolve(downloadPath, video.path.replace(video.name, ''));
 
       console.log(video, 'VIDEO');
-      this.OpenSub.search({
-        path: path.resolve(downloadPath, video.path),
-        imdbid: this.state.video.imdb_code,
-        gzip: true
-      }).then(subtitles => {
-        console.log(subtitles, 'SUBTITLES');
-        const movie = Object.assign(this.props.movie, {
-          subtitles
-        });
-        this.props.actions.updateCurrentMovieSubtitles(movie);
-        return true;
-      }).catch(err => console.error(err, 'OPEN SUBTITLES ERROR SEARCH'));
 
-      video.renderTo(this.video);
+      video.renderTo(this.video, (err) => {
+        if (err) console.log(err, 'ERROR ON RENDER');
+        else {
+          yifysubtitles(this.props.movie.imdb_code, {
+            path: videoPath,
+            langs: Object.keys(langs)
+          }).then(res => {
+            console.log(res, 'YIFY SUBTITLES');
+            this.props.actions.isLoading(false);
+            this.togglePlay();
+
+            // fomrat subtitles form
+            const subtitles = res.map(sub => ({
+              ...sub,
+              uuid: uuid()
+            }));
+
+            const movie = Object.assign(this.props.movie, {
+              subtitles
+            });
+
+            this.props.actions.updateCurrentMovie(movie);
+            return true;
+          }).catch(error => console.error(error, 'YIFY'));
+        }
+      });
 
       torrent.on('download', bytes => {
         this.setState({
@@ -121,13 +133,9 @@ export default class Player extends Component<Props> {
   }
 
   client = new WebTorrent();
-  OpenSub = new OpenSubtitles({
-    useragent: 'TemporaryUserAgent',
-    ssl: true
-  });
   timeOut = null;
 
-  setRef = element => {
+  getVideoRef = element => {
     this.video = element;
   }
 
@@ -178,12 +186,6 @@ export default class Player extends Component<Props> {
   }
 
   togglePlay = () => {
-    if (this.state.pause) {
-      this.video.play();
-    } else {
-      this.video.pause();
-    }
-
     this.setState({
       pause: !this.state.pause
     });
@@ -242,17 +244,16 @@ export default class Player extends Component<Props> {
   }
 
   handleSubtitleChange = event => {
-    const selectedSubtitle = this.props.movie.subtitles[event.target.value];
+    const { subtitles } = this.props.movie;
+    const selectedSubtitle = subtitles.find(sub => sub.langShort === event.target.value);
 
-    changeSubtitle(selectedSubtitle, {
-      name: this.state.videoName,
-      path: this.state.videoPath
-    }).then(result => {
-      this.setState({
-        currentSubtitle: result
-      });
-      return true;
-    }).catch(err => console.error(err, 'BETA'));
+    this.setState({
+      currentSubtitle: Object.assign({}, {
+        srcLang: selectedSubtitle.langShort,
+        src: selectedSubtitle.path,
+        lang: selectedSubtitle.lang.replace(/\b\w/g, l => l.toUpperCase())
+      })
+    });
   }
 
   render() {
@@ -293,7 +294,7 @@ export default class Player extends Component<Props> {
               </Left>
               <Right>
                 <Subtitles
-                  subtitles={this.props.movie.subtitles || {}}
+                  subtitles={this.props.movie.subtitles}
                   handleChange={this.handleSubtitleChange}
                   currentSubtitle={this.state.currentSubtitle}
                 />
@@ -305,9 +306,8 @@ export default class Player extends Component<Props> {
           </Controls>
         </PlayerInfoLayout>
         <Video
-          setRef={this.setRef}
-          autoplay
-          controls={false}
+          pause={this.state.pause}
+          getRef={this.getVideoRef}
           handleMouseMove={this.handleMouseMove}
           handleMouseLeave={this.handleMouseLeave}
           handleTimeUpdate={this.handleTimeUpdate}

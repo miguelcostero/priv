@@ -3,7 +3,8 @@ import uuid from 'uuid/v4';
 import {
   IS_LOADING,
   UPDATE_CURRENT_MOVIE,
-  UPDATE_DOCUMENT_TITLE
+  UPDATE_DOCUMENT_TITLE,
+  UPDATE_MOVIES_LIST
 } from '../action-types';
 import { url } from '../config/api';
 
@@ -34,6 +35,15 @@ export function updateWindowTitle(value: string) {
   };
 }
 
+export function updateMoviesList(movies) {
+  return {
+    type: UPDATE_MOVIES_LIST,
+    payload: {
+      movies
+    }
+  };
+}
+
 export function getMovieDetails(id: string) {
   return dispatch => {
     dispatch(isLoading(true));
@@ -51,11 +61,33 @@ export function getMovieDetails(id: string) {
         uuid: uuid()
       }));
       movie.genres = genres;
-      movie.subtitles = {};
+      movie.subtitles = [];
 
       dispatch(isLoading(false));
       dispatch(updateWindowTitle(`${movie.title_long} - Priv`));
       dispatch(updateCurrentMovie(movie));
+      return true;
+    }).catch(err => console.error(err, 'ERROR'));
+  };
+}
+
+export function findMoviesList(options = {}) {
+  return dispatch => {
+    dispatch(isLoading(true));
+
+    axios.get(`${url}/list_movies.json`, {
+      params: {
+        ...options,
+        with_rt_ratings: true
+      }
+    }).then(res => {
+      let movies = [];
+      if (res.data.data.movie_count > 0) {
+        ({ movies } = res.data.data);
+      }
+
+      dispatch(isLoading(false));
+      dispatch(updateMoviesList(movies));
       return true;
     }).catch(err => console.error(err, 'ERROR'));
   };

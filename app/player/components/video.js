@@ -1,49 +1,72 @@
 // @flow
-import React from 'react';
+import React, { Component } from 'react';
 import styles from './video.sass';
 
 type Props = {
-  setRef: () => void,
+  pause: boolean,
   handleMouseMove: () => void,
   handleMouseLeave: () => void,
   handleTimeUpdate: () => void,
   handleKeyUp: () => void,
   handleClick: () => void,
-  autoplay: boolean,
-  controls: boolean,
   subtitle: {
     src?: string,
     srcLang?: string,
     lang?: string
-  }
+  },
+  getRef: () => void
 };
 
-const Video = (props: Props) => (
-  <div
-    className={styles.Container}
-    onClick={props.handleClick}
-    onKeyUp={props.handleKeyUp}
-    role="button"
-    tabIndex="0"
-  >
-    <video
-      autoPlay={props.autoplay}
-      ref={props.setRef}
-      controls={props.controls}
-      onMouseMove={props.handleMouseMove}
-      onMouseLeave={props.handleMouseLeave}
-      onTimeUpdate={props.handleTimeUpdate}
-    >
-      <track
-        key={props.subtitle.srcLang}
-        src={props.subtitle.src}
-        kind="captions"
-        srcLang={props.subtitle.srcLang}
-        lang={props.subtitle.lang}
-        default
-      />
-    </video>
-  </div>
-);
+export default class Video extends Component<Props> {
+  props: Props;
 
-export default Video;
+  componentDidMount() {
+    this.props.getRef(this.video);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.pause !== this.props.pause) {
+      this.togglePlay();
+    }
+  }
+
+  togglePlay() {
+    if (this.props.pause) {
+      this.video.play();
+    } else {
+      this.video.pause();
+    }
+  }
+
+  setRef = element => {
+    this.video = element;
+  }
+
+  render() {
+    return (
+      <div
+        className={styles.Container}
+        onClick={this.props.handleClick}
+        onKeyUp={this.props.handleKeyUp}
+        role="button"
+        tabIndex="0"
+      >
+        <video
+          ref={this.setRef}
+          onMouseMove={this.props.handleMouseMove}
+          onMouseLeave={this.props.handleMouseLeave}
+          onTimeUpdate={this.props.handleTimeUpdate}
+        >
+          <track
+            key={this.props.subtitle.srcLang}
+            src={this.props.subtitle.src}
+            kind="captions"
+            srcLang={this.props.subtitle.srcLang}
+            lang={this.props.subtitle.lang}
+            default
+          />
+        </video>
+      </div>
+    );
+  }
+}
