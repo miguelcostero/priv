@@ -18,7 +18,7 @@ type Props = {
     description_full: string,
     rating: number,
     mpa_rating: string,
-    date_uploaded: string,
+    date_uploaded?: string,
     torrents: [],
     medium_screenshot_image1: string,
     medium_screenshot_image2: string,
@@ -50,14 +50,19 @@ const MovieDetails = (props: Props) => (
             <FontAwesomeIcon icon={faStar} />
           </span>
         </div>
-        <p className={styles.mpaRating}>
-          <FontAwesomeIcon icon={faEye} />
-          <span style={{ marginLeft: '10px' }}>{props.movie.mpa_rating}</span>
-        </p>
-        <p className={styles.dateAdded}>
-          {moment(props.movie.date_uploaded).format('MMMM Do YYYY, h:mm:ss a')}
-        </p>
-
+        {
+          (props.movie.mpa_rating) &&
+          <p className={styles.mpaRating}>
+            <FontAwesomeIcon icon={faEye} />
+            <span style={{ marginLeft: '10px' }}>{props.movie.mpa_rating}</span>
+          </p>
+        }
+        {
+          (props.movie.date_uploaded) &&
+          <p className={styles.dateAdded}>
+            {moment(props.movie.date_uploaded).format('MMMM Do YYYY, h:mm:ss a')}
+          </p>
+        }
         <div className={styles.PlayButtons}>
           {
             props.movie.torrents.map(torrent => (

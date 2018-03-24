@@ -2,21 +2,32 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router';
+import * as _ from 'lodash';
 import * as Actions from '../../actions';
 import HomeLayout from '../components/home-layout';
 import Search from '../../widgets/containers/search';
 import TopBar from '../components/top-bar';
 import ConfigButton from '../components/config-button';
 import MovieList from '../../movies/containers/movies';
+import ModalContainer from '../../widgets/containers/modal';
+import Modal from '../../widgets/components/modal';
+import SearchResult from '../components/search-result';
 
 type Props = {
   windowTitle: string,
   actions: {
     findMoviesList: (options?: {}) => void,
-    updateWindowTitle: (title: string) => void
+    updateWindowTitle: (title: string) => void,
+    updateSearchList: () => void,
+    closeModal: () => void,
+    openModal: () => void
   },
-  movies: []
+  movies: [],
+  search: [],
+  modal: {
+    visibility: boolean
+  }
 };
 
 class HomePage extends Component<Props> {
@@ -27,13 +38,20 @@ class HomePage extends Component<Props> {
   }
 
   componentDidMount() {
-    this.props.actions.findMoviesList({
-      sort_by: 'year'
-    });
+    if (_.isEmpty(this.props.movies)) {
+      this.props.actions.findMoviesList({
+        sort_by: 'date_added,like_count'
+      });
+    }
   }
 
   handleConfigButtonClick = () => {
     console.log('click config');
+    this.props.actions.openModal();
+  }
+
+  handleCloseModal = () => {
+    this.props.actions.closeModal();
   }
 
   render() {
@@ -51,9 +69,29 @@ class HomePage extends Component<Props> {
             handleClick={this.handleConfigButtonClick}
           />
         </TopBar>
-        <MovieList
-          movies={this.props.movies}
-        />
+        {
+          (!_.isEmpty(this.props.search)) &&
+          <SearchResult
+            result={this.props.search}
+          />
+        }
+        <div
+          style={(_.isEmpty(this.props.search)) ? { paddingTop: '95px' } : { paddingTop: '30px' }}
+        >
+          <MovieList
+            movies={this.props.movies}
+          />
+        </div>
+        {
+          this.props.modal.visibility &&
+          <ModalContainer>
+            <Modal
+              handleClick={this.handleCloseModal}
+            >
+              <h1>Configurations</h1>
+            </Modal>
+          </ModalContainer>
+        }
       </HomeLayout>
     );
   }
@@ -62,7 +100,9 @@ class HomePage extends Component<Props> {
 function mapStateToProps(state) {
   return {
     movies: state.data.movies,
-    windowTitle: state.documentTitle.title
+    windowTitle: state.documentTitle.title,
+    search: state.data.searchResult,
+    modal: state.modal
   };
 }
 

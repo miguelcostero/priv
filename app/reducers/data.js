@@ -1,23 +1,28 @@
 import {
   UPDATE_CURRENT_MOVIE,
-  UPDATE_MOVIES_LIST
+  UPDATE_MOVIES_LIST,
+  SEARCH_MOVIES
 } from '../action-types';
 
 const initialState = {
   movies: [],
-  currentMovie: {}
+  currentMovie: {},
+  searchResult: []
 };
 
 export default function data(state = initialState, action) {
+  const clone = Object.assign({}, state);
+
   switch (action.type) {
     case UPDATE_CURRENT_MOVIE:
-      return {
-        currentMovie: action.payload.movie
-      };
+      clone.currentMovie = action.payload.movie;
+      return clone;
     case UPDATE_MOVIES_LIST:
-      return {
-        movies: action.payload.movies
-      };
+      clone.movies = action.payload.movies;
+      return clone;
+    case SEARCH_MOVIES:
+      clone.searchResult = action.payload.result;
+      return clone;
     default:
       return state;
   }

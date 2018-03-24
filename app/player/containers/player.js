@@ -80,7 +80,10 @@ export default class Player extends Component<Props> {
 
       console.log(video, 'VIDEO');
 
-      video.renderTo(this.video, (err) => {
+      video.renderTo(this.video, {
+        autoplay: false,
+        controls: false
+      }, (err) => {
         if (err) console.log(err, 'ERROR ON RENDER');
         else {
           yifysubtitles(this.props.movie.imdb_code, {
@@ -155,10 +158,6 @@ export default class Player extends Component<Props> {
         });
       }, 2500);
     }
-  }
-
-  handleMouseLeave = () => {
-    console.log('mouse leaved');
   }
 
   handleFullScreenClick = () => {
@@ -256,6 +255,14 @@ export default class Player extends Component<Props> {
     });
   }
 
+  handleSeeking = () => {
+    this.props.actions.isLoading(true);
+  }
+
+  handleSeeked = () => {
+    this.props.actions.isLoading(false);
+  }
+
   render() {
     return (
       <PlayerLayout
@@ -309,11 +316,12 @@ export default class Player extends Component<Props> {
           pause={this.state.pause}
           getRef={this.getVideoRef}
           handleMouseMove={this.handleMouseMove}
-          handleMouseLeave={this.handleMouseLeave}
           handleTimeUpdate={this.handleTimeUpdate}
           handleClick={this.togglePlay}
           handleKeyUp={this.handleKeyUpToTogglePlay}
           subtitle={this.state.currentSubtitle}
+          handleSeeking={this.handleSeeking}
+          handleSeeked={this.handleSeeked}
         />
       </PlayerLayout>
     );

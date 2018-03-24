@@ -7,7 +7,9 @@ import Search from '../components/search';
 
 type Props = {
   actions: {
-    findMoviesList: (options?: {}) => void
+    findMoviesList: (options?: {}) => void,
+    searchMovies: (options?: {}) => void,
+    updateSearchList: () => void
   }
 };
 
@@ -21,11 +23,9 @@ class SearchContainer extends Component<Props> {
     event.preventDefault();
 
     if (!this.input.value.length > 0) {
-      this.props.actions.findMoviesList({
-        sort_by: 'year'
-      });
+      this.props.actions.updateSearchList([]);
     } else {
-      this.props.actions.findMoviesList({
+      this.props.actions.searchMovies({
         query_term: this.input.value
       });
     }
@@ -39,6 +39,10 @@ class SearchContainer extends Component<Props> {
     this.setState({
       value: event.target.value
     });
+
+    if (!event.target.value.length > 0) {
+      this.props.actions.updateSearchList([]);
+    }
   }
 
   render() {

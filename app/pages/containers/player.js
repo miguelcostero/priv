@@ -1,7 +1,7 @@
 // @flow
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import Player from '../../player/containers/player';
 import * as Actions from '../../actions';
 

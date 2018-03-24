@@ -5,10 +5,11 @@ import styles from './video.sass';
 type Props = {
   pause: boolean,
   handleMouseMove: () => void,
-  handleMouseLeave: () => void,
   handleTimeUpdate: () => void,
   handleKeyUp: () => void,
   handleClick: () => void,
+  handleSeeking: () => void,
+  handleSeeked: () => void,
   subtitle: {
     src?: string,
     srcLang?: string,
@@ -54,8 +55,9 @@ export default class Video extends Component<Props> {
         <video
           ref={this.setRef}
           onMouseMove={this.props.handleMouseMove}
-          onMouseLeave={this.props.handleMouseLeave}
           onTimeUpdate={this.props.handleTimeUpdate}
+          onSeeking={this.props.handleSeeking}
+          onSeeked={this.props.handleSeeked}
         >
           <track
             key={this.props.subtitle.srcLang}

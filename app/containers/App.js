@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Loader from '../widgets/containers/loader';
 import HandleError from '../error/containers/handle-error';
 
@@ -33,4 +34,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(App);
+export default withRouter(connect(mapStateToProps, null)(App));
