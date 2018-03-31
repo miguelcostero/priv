@@ -13,6 +13,7 @@ import MovieList from '../../movies/containers/movies';
 import ModalContainer from '../../widgets/containers/modal';
 import Modal from '../../widgets/components/modal';
 import SearchResult from '../components/search-result';
+import AppSettings from '../../settings/containers/settings';
 
 type Props = {
   windowTitle: string,
@@ -84,13 +85,13 @@ class HomePage extends Component<Props> {
         </div>
         {
           this.props.modal.visibility &&
-          <ModalContainer>
-            <Modal
-              handleClick={this.handleCloseModal}
-            >
-              <h1>Configurations</h1>
-            </Modal>
-          </ModalContainer>
+            <ModalContainer>
+              <Modal
+                handleClick={this.handleCloseModal}
+              >
+                <AppSettings />
+              </Modal>
+            </ModalContainer>
         }
       </HomeLayout>
     );

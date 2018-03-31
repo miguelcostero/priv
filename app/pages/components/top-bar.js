@@ -1,9 +1,9 @@
 // @flow
-import React from 'react';
+import React, { type Node } from 'react';
 import styles from './top-bar.sass';
 
 type Props = {
-  children: React.Node
+  children: Node
 };
 
 const TopBar = (props: Props) => (

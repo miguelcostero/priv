@@ -1,9 +1,9 @@
 // @flow
-import React, { Component } from 'react';
+import { Component, type Node } from 'react';
 import { createPortal } from 'react-dom';
 
 type Props = {
-  children: React.Node
+  children: Node
 };
 
 class ModalContainer extends Component<Props> {

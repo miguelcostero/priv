@@ -1,12 +1,12 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, type Node } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Loader from '../widgets/containers/loader';
 import HandleError from '../error/containers/handle-error';
 
 type Props = {
-  children: React.Node,
+  children: Node,
   loading: boolean
 };
 

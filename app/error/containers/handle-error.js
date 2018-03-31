@@ -1,10 +1,10 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, type Node } from 'react';
 import RegularError from '../components/regular-error';
 
 type Props = {
-  children: React.Node
-}
+  children: Node
+};
 
 export default class HandleError extends Component<Props> {
   props: Props;

@@ -1,11 +1,12 @@
 // @flow
 import React from 'react';
+import type { Node } from 'react';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faTimes from '@fortawesome/fontawesome-free-solid/faTimes';
 import styles from './modal.sass';
 
 type Props = {
-  children: React.Node,
+  children: Node,
   handleClick: () => void
 };
 

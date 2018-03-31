@@ -1,0 +1,35 @@
+$bg: darken(#222222, 5%)
+$green: #0CCA4A
+
+.CacheFolderSelector
+  margin-top: 25px
+  color: grey
+
+  .Title
+    h3, p
+      line-height: 1
+
+    h3
+      margin-bottom: 0
+
+  .PathContainer
+    background-color: $bg
+    padding: 5px 15px
+    border: 1px solid darken($green, 5%)
+    cursor: text
+
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+    button
+      background: $bg
+      color: white
+      border: none
+      font-size: 28px
+      cursor: pointer
+      outline: 0
+      transition: color 300ms cubic-bezier(0.175, 0.885, 0.32, 1)
+
+      &:hover
+        color: $green

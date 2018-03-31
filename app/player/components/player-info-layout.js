@@ -3,17 +3,33 @@ import React from 'react';
 import styles from './player-info-layout.sass';
 
 type Props = {
-  opacity: number,
+  hide: boolean,
   children: {}
 };
 
-const PlayerInfoLayout = (props: Props) => (
-  <div
-    className={styles.PlayerInfoLayout}
-    style={{ opacity: props.opacity }}
-  >
-    {props.children}
-  </div>
-);
+let style;
+
+const PlayerInfoLayout = (props: Props) => {
+  if (props.hide) {
+    style = {
+      opacity: 1,
+      cursor: 'default'
+    };
+  } else {
+    style = {
+      opacity: 0,
+      cursor: 'none'
+    };
+  }
+
+  return (
+    <div
+      className={styles.PlayerInfoLayout}
+      style={style}
+    >
+      {props.children}
+    </div>
+  );
+};
 
 export default PlayerInfoLayout;

@@ -4,6 +4,7 @@
   float: left
   transition: all 600ms ease
   overflow: hidden
+  width: 100%
 
   img
     width: 100%
@@ -17,7 +18,7 @@
     height: 100%
 
     opacity: 0
-    background: rgba(lighten(black, 30%), .90)
+    background: rgba(lighten(black, 40%), .75)
     transition: all 800ms cubic-bezier(0.175, 0.175, 0.32, 2)    
 
     display: flex
@@ -29,7 +30,7 @@
 
     h1
       font-weight: 900
-      width: 90%
+      width: 95%
       margin-left: auto
       margin-right: auto
       line-height: .9
@@ -44,6 +45,18 @@
         padding-left: 15px
         padding-right: 15px
         font-weight: 700
+
+    .rating
+      display: inline-flex
+      align-items: center
+      height: 25px
+      color: #fff000
+
+      span
+        color: #ffffff
+        font-weight: 900
+        margin-left: 5px
+        font-size: 18px
 
   &:hover
     transform: scale(1.05, 1.05)

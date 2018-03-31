@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { type Node } from 'react';
 import styles from './movie-details-layout.sass';
 
 type Props = {
-  children: {}
+  children: Node
 }
 
 const MovieDetailsLayout = (props: Props) => (

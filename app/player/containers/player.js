@@ -6,9 +6,8 @@ import uuid from 'uuid/v4';
 import yifysubtitles from 'yifysubtitles';
 import Video from '../components/video';
 import Controls from '../components/controls';
-import langs from '../../config/langs.json';
 import api from '../../config/api';
-import { downloadPath } from '../../config/cache';
+import { getDownloadPath } from '../../config/cache';
 import PlayerLayout from '../components/player-layout';
 import PlayPause from '../components/play-pause';
 import FullScreen from '../components/full-screen';
@@ -67,64 +66,76 @@ export default class Player extends Component<Props> {
   componentDidMount() {
     this.props.actions.isLoading(true);
     this.togglePlay();
-    const torrentUrl = `${api.torrent}/${this.props.match.params.hash}`;
-    const options = {
-      path: downloadPath
-    };
+    getDownloadPath().then(downloadPath => {
+      const torrentUrl = `${api.torrent}/${this.props.match.params.hash}`;
+      const options = {
+        path: downloadPath
+      };
 
-    this.client.add(torrentUrl, options);
+      this.client.add(torrentUrl, options);
 
-    this.client.on('torrent', torrent => {
-      const video = torrent.files.find(file => file.name.endsWith('.mp4'));
-      const videoPath = path.resolve(downloadPath, video.path.replace(video.name, ''));
+      this.client.on('torrent', torrent => {
+        const video = torrent.files.find(file => file.name.endsWith('.mp4'));
+        const videoPath = path.resolve(downloadPath, video.path.replace(video.name, ''));
 
-      console.log(video, 'VIDEO');
+        console.log(video, 'VIDEO');
 
-      video.renderTo(this.video, {
-        autoplay: false,
-        controls: false
-      }, (err) => {
-        if (err) console.log(err, 'ERROR ON RENDER');
-        else {
-          yifysubtitles(this.props.movie.imdb_code, {
-            path: videoPath,
-            langs: Object.keys(langs)
-          }).then(res => {
-            console.log(res, 'YIFY SUBTITLES');
-            this.props.actions.isLoading(false);
-            this.togglePlay();
+        video.renderTo(this.video, {
+          autoplay: false,
+          controls: false
+        }, (err) => {
+          if (err) console.log(err, 'ERROR ON RENDER');
+          else {
+            yifysubtitles(this.props.movie.imdb_code, {
+              path: videoPath,
+              langs: [
+                'es',
+                'en',
+                'fr'
+              ]
+            }).then(res => {
+              console.log(res, 'YIFY SUBTITLES');
+              this.props.actions.isLoading(false);
+              this.togglePlay();
 
-            // fomrat subtitles form
-            const subtitles = res.map(sub => ({
-              ...sub,
-              uuid: uuid()
-            }));
+              // fomrat subtitles form
+              const subtitles = res.map(sub => ({
+                ...sub,
+                uuid: uuid()
+              }));
 
-            const movie = Object.assign(this.props.movie, {
-              subtitles
+              const movie = Object.assign(this.props.movie, {
+                subtitles
+              });
+
+              this.props.actions.updateCurrentMovie(movie);
+              return true;
+            }).catch(error => {
+              console.error(error, 'ERROR GETTING SUBTITLES');
+              this.props.actions.isLoading(false);
+              this.togglePlay();
             });
-
-            this.props.actions.updateCurrentMovie(movie);
-            return true;
-          }).catch(error => console.error(error, 'YIFY'));
-        }
-      });
-
-      torrent.on('download', bytes => {
-        this.setState({
-          data: {
-            currentBytes: bytes,
-            downloaded: torrent.downloaded,
-            downloadSpeed: torrent.downloadSpeed,
-            progress: torrent.progress
           }
         });
-      });
-    });
 
-    this.client.on('error', err => {
-      console.error(err, 'ERROR ON WEBTORRENT CLIENT');
-    });
+        torrent.on('download', bytes => {
+          this.setState({
+            data: {
+              currentBytes: bytes,
+              downloaded: torrent.downloaded,
+              downloadSpeed: torrent.downloadSpeed,
+              progress: torrent.progress
+            }
+          });
+        });
+      });
+
+      this.client.on('error', err => {
+        console.error(err, 'ERROR ON WEBTORRENT CLIENT');
+      });
+
+      return true;
+    }).catch(err => console.error(err, 'COULD NOT CREATE NEW FOLDER'));
   }
 
   componentWillUnmount() {
@@ -270,7 +281,7 @@ export default class Player extends Component<Props> {
         setRef={this.setRefPlayer}
       >
         <PlayerInfoLayout
-          opacity={(this.state.showInfo || this.state.pause) ? 1 : 0}
+          hide={(this.state.showInfo || this.state.pause)}
         >
           <GoBack path={`/movie/${this.props.movie.id}`} />
           <Title title={this.props.movie.title} />

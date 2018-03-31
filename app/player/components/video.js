@@ -20,6 +20,9 @@ type Props = {
 
 export default class Video extends Component<Props> {
   props: Props;
+  state = {
+    cursor: true
+  }
 
   componentDidMount() {
     this.props.getRef(this.video);
@@ -37,6 +40,10 @@ export default class Video extends Component<Props> {
     } else {
       this.video.pause();
     }
+
+    this.setState({
+      cursor: !this.state.cursor
+    });
   }
 
   setRef = element => {
@@ -58,6 +65,7 @@ export default class Video extends Component<Props> {
           onTimeUpdate={this.props.handleTimeUpdate}
           onSeeking={this.props.handleSeeking}
           onSeeked={this.props.handleSeeked}
+          style={{ cursor: (!this.state.cursor) ? 'default' : 'none' }}
         >
           <track
             key={this.props.subtitle.srcLang}

@@ -24,7 +24,8 @@ type Props = {
     medium_screenshot_image2: string,
     medium_screenshot_image3: string,
     slug: string
-  }
+  },
+  handleOpenModal: (image: number) => void
 };
 
 const MovieDetails = (props: Props) => (
@@ -83,13 +84,37 @@ const MovieDetails = (props: Props) => (
           autoWidth
         >
           <div className={styles.item}>
-            <img src={props.movie.medium_screenshot_image1} alt={props.movie.slug} />
+            <div
+              onClick={() => props.handleOpenModal(1)}
+              onKeyUp={() => { }}
+              role="button"
+              tabIndex="-1"
+              style={{ cursor: 'pointer' }}
+            >
+              <img src={props.movie.medium_screenshot_image1} alt={props.movie.slug} />
+            </div>
           </div>
           <div className={styles.item}>
-            <img src={props.movie.medium_screenshot_image2} alt={props.movie.slug} />
+            <div
+              onClick={() => props.handleOpenModal(2)}
+              onKeyUp={() => { }}
+              role="button"
+              tabIndex="-2"
+              style={{ cursor: 'pointer' }}
+            >
+              <img src={props.movie.medium_screenshot_image2} alt={props.movie.slug} />
+            </div>
           </div>
           <div className={styles.item}>
-            <img src={props.movie.medium_screenshot_image3} alt={props.movie.slug} />
+            <div
+              onClick={() => props.handleOpenModal(3)}
+              onKeyUp={() => { }}
+              role="button"
+              tabIndex="-3"
+              style={{ cursor: 'pointer' }}
+            >
+              <img src={props.movie.medium_screenshot_image3} alt={props.movie.slug} />
+            </div>
           </div>
         </OwlCarousel>
       </div>

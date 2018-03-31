@@ -1,9 +1,9 @@
 // @flow
-import * as React from 'react';
+import React, { type Node } from 'react';
 import styles from './home-layout.sass';
 
 type Props = {
-  children: React.Node
+  children: Node
 };
 
 const HomeLayout = (props: Props) => (

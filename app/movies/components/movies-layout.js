@@ -1,9 +1,9 @@
 // @flow
-import React from 'react';
+import React, { type Node } from 'react';
 import styles from './movies-layout.sass';
 
 type Props = {
-  children: React.Node
+  children: Node
 };
 
 const MoviesLayout = (props: Props) => (
