@@ -9,8 +9,8 @@ import PlayerPage from './pages/containers/player';
 export default () => (
   <App>
     <Switch>
-      <Route path="/movie/:id" component={MovieDetailsPage} />
-      <Route path="/player/:hash" component={PlayerPage} />
+      <Route path="/movie/:id" component={MovieDetailsPage} exact />
+      <Route path="/player/:hash" component={PlayerPage} exact />
       <Route path="/" component={HomePage} />
     </Switch>
   </App>

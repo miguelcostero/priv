@@ -8,8 +8,7 @@ import * as Actions from '../../actions';
 import MovieDetailsLayout from '../components/movie-details-layout';
 import GoBack from '../components/go-back';
 import MovieDetails from '../components/movie-details';
-import ModalContainer from '../../widgets/containers/modal';
-import Modal from '../../widgets/components/modal';
+import { getMovieSuggestions } from '../../api';
 
 type Props = {
   match: {
@@ -18,43 +17,40 @@ type Props = {
     }
   },
   actions: {
-    getMovieDetails: (id: number) => void,
+    findMovieDetails: (id: number) => void,
     openModal: () => void,
     closeModal: () => void
   },
   movie: ?{},
-  windowTitle: string,
-  modal: {
-    visibility: boolean
-  }
+  windowTitle: string
 };
 
 class MovieDetailsPage extends Component<Props> {
   props: Props;
   state = {
-    modal: {
-      image: '',
-    }
+    suggestions: []
   }
 
   componentDidMount() {
-    this.props.actions.getMovieDetails(this.props.match.params.id);
+    this.getMovieDetails(this.props.match.params.id);
   }
 
-  handleOpenModal = (image: number) => {
-    console.log(`click ${image}`);
-
-    this.setState({
-      modal: {
-        image: this.props.movie[`large_screenshot_image${image}`]
-      }
-    });
-
-    this.props.actions.openModal();
+  componentWillReceiveProps(newProps) {
+    if (this.props.match.params.id !== newProps.match.params.id) {
+      this.getMovieDetails(newProps.match.params.id);
+    }
   }
 
-  handleCloseModal = () => {
-    this.props.actions.closeModal();
+  getMovieDetails = (id: string) => {
+    this.props.actions.findMovieDetails(id);
+
+    getMovieSuggestions(parseInt(id, 10)).then(res => {
+      this.setState({
+        suggestions: res.data.movies
+      });
+
+      return true;
+    }).catch(err => console.error(err, 'ERROR'));
   }
 
   render() {
@@ -69,19 +65,8 @@ class MovieDetailsPage extends Component<Props> {
           (!_.isEmpty(movie)) &&
           <MovieDetails
             movie={movie}
-            handleOpenModal={this.handleOpenModal}
+            suggestions={this.state.suggestions}
           />
-        }
-
-        {
-          this.props.modal.visibility &&
-          <ModalContainer>
-            <Modal
-              handleClick={this.handleCloseModal}
-            >
-              <img src={this.state.modal.image} alt={movie.title_long} style={{ width: '100%' }} />
-            </Modal>
-          </ModalContainer>
         }
       </MovieDetailsLayout>
     );
@@ -91,8 +76,7 @@ class MovieDetailsPage extends Component<Props> {
 function mapStateToProps(state) {
   return {
     movie: state.data.currentMovie,
-    windowTitle: state.documentTitle.title,
-    modal: state.modal
+    windowTitle: state.documentTitle.title
   };
 }
 

@@ -4,15 +4,21 @@ import MoviesLayout from '../components/movies-layout';
 import Card from '../components/movie-card';
 
 type Props = {
-  movies: []
+  movies: [],
+  perLine?: number
 };
 
 export default class MoviesContainer extends Component<Props> {
   props: Props;
+  static defaultProps = {
+    perLine: 5
+  }
 
   render() {
     return (
-      <MoviesLayout>
+      <MoviesLayout
+        perLine={this.props.perLine}
+      >
         {
           (this.props.movies) ?
             this.props.movies.map(movie => (

@@ -3,113 +3,230 @@
   width: 100%
   height: 100vh
   overflow: hidden
-  background-color: rgba(grey, .5)
+  background-color: #222222
   background-size: cover
 
-  section.movieInfo
+  .TabList
     position: absolute
-    top: 0
-    left: 0
+    top: 5px
+    height: 48px
     width: 100%
-    height: 100%
+    text-align: center
+    list-style: none
+    outline: 0
+
+    li
+      display: inline-block
+      margin-right: 20px
+      outline: 0
+      cursor: pointer
+
+      text-transform: uppercase
+      font-weight: 900
+      font-size: 20px
+
+      transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+      &:hover
+        color: darken(white, 25%)
+
+      &:last-child
+        margin-right: 0     
+
+      &::after
+        content: ''
+        display: block
+        width: 0
+        height: 3px
+        background: green
+        transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1)        
+
+      &[class*='--selected']
+        &::after
+          width: 100%
+
+  .TabPanel
     background-color: rgba(#000000, .6)
 
-    display: flex
-    align-items: center
-    justify-content: center
+    &[class*='--selected']
+      animation: fadeEffect 600ms ease-out
 
-    aside.Sidebar
-      width: 30vw
-      height: 90vh
+    .Content
+      padding-left: 2.5rem
+      padding-right: 2.5rem
+      height: 100vh
+      overflow: hidden
+
       display: flex
       align-items: center
+      justify-content: center
 
-      img
-        display: inline-block
-        width: 100%
-        height: 100%
-
-    .content
-      margin-left: 2.5vw
-      width: 50vw
-
-      h1.title
-        font-size: 2.5rem
-        letter-spacing: -0.03em
-        margin-top: 0
-
-      .genres
-        span
-          font-weight: 900
-          margin-left: 10px
-          text-transform: capitalize
-          background: #414141
-          padding: .5em
-          transition: background 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
-
-          &:hover
-            background: darken(#414141, 5%)
-
-          &:first-child
-            margin-left: 0
-
-      p.description
-        margin-top: 30px
-        font-size: 1.2rem
-        font-weight: 300
-
-      .rating
-        height: 20px
+      .ContentWrapper
         overflow: hidden
-        display: flex
-        align-items: center
 
-        span
+        aside, .Info
+          float: left
+
+      aside.Sidebar
+        overflow: hidden
+        width: 30vw
+
+        img.Poster
+          display: block
+          width: 80%
+          margin-left: auto
+          margin-right: auto
+
+      .Info
+        width: 50vw
+
+  .DetailsTitle
+    display: inline-block
+    font-size: 24px
+    text-transform: uppercase
+    margin-bottom: 10px
+
+    &::after
+      content: ''
+      display: block
+      width: 100%
+      height: 3px
+      background: green
+
+  .Cast
+    ul
+      list-style: none
+      overflow: hidden
+      padding: 0
+
+      li
+        display: flex
+        justify-content: center
+
+        float: left
+        width: 45%
+        margin-right: 2.5%
+        margin-bottom: 20px
+
+        img
+          min-width: 60px
+          width: 60px
+          max-width: 60px
+          min-height: 60px
+          height: 60px
+          max-height: 60px
+          border-radius: 100%
+
+        p
+          align-self: center
+          margin: 0
           margin-left: 10px
-          font-weight: 900
+          word-wrap: break-word
 
-        span.icon
-          margin-left: 5px
-          color: #fff000
-      
-      p.dateAdded
-        font-weight: 300
-        color: #666666
-      
-      p.mpaRating
-        font-weight: 900
-      
-      p.year
-        font-weight: 900
+  .TorrentInfo
+    ul
+      list-style: none
+      overflow: hidden
+      padding: 0
+      margin-bottom: 0
 
-      .PlayButtons
-        display: flex
-        align-items: flex-start
+      li
+        float: left
+        width: 45%
+        margin-right: 2.5%
+        margin-bottom: 20px
 
-        a
-          text-decoration: none !important
+        p
+          margin: 0
+          margin-bottom: 5px
+          word-wrap: break-word
 
-        .PlayButton
-          margin-right: 20px
-          background: #00C853
-          padding: 15px
-          padding-left: 20px
-          padding-right: 20px
-          color: #ffffff
-          font-weight: 700
-          font-size: 1.2rem
-          transition: background 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+          &.Quality
+            font-weight: 900
 
-          &:hover
-            background: #00E676
-      
-      .Screenshots
-        margin-top: 25px
+          &.DateAdded
+            font-weight: lighter
 
-        .item
-          width: 350px
-          height: 150px
+  .PlayButtons
+    display: flex
+    align-items: flex-start
 
-          img
-            width: 100%
-            height: 100%
+    a
+      text-decoration: none !important
+
+    .PlayButton
+      margin-right: 20px
+      background: #00C853
+      padding: 15px
+      padding-left: 20px
+      padding-right: 20px
+      color: #ffffff
+      font-weight: 700
+      font-size: 1.2rem
+      transition: background 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+      &:hover
+        background: #00E676
+
+  .genres > span
+    font-weight: 900
+    margin-left: 10px
+    text-transform: capitalize
+    background: #414141
+    padding: .5em
+    transition: background 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275)
+
+    &:hover
+      background: darken(#414141, 5%)
+
+    &:first-child
+      margin-left: 0
+
+  h1.title
+    font-size: 2.5rem
+    letter-spacing: -0.03em
+    margin-top: 0
+
+  p.description
+    margin-top: 30px
+    font-size: 1.2rem
+    font-weight: 300
+
+  .rating
+    height: 20px
+    overflow: hidden
+    display: flex
+    align-items: center
+
+    span
+      margin-left: 10px
+      font-weight: 900
+
+      &.icon
+        margin-left: 5px
+        color: #fff000
+  
+  p.dateAdded
+    font-weight: 300
+    line-height: 1.5
+    color: #666666
+    margin-top: 0
+
+    span
+      font-weight: 500
+  
+  p.mpaRating
+    font-weight: 900
+  
+  p.year
+    font-weight: 900
+
+@keyframes fadeEffect
+  0%
+    background-color: rgba(#000000, .6)
+
+  50%
+    background-color: rgba(#000000, .65)
+
+  100%
+    background-color: rgba(#000000, .6)

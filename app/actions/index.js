@@ -1,4 +1,3 @@
-import axios from 'axios';
 import uuid from 'uuid/v4';
 import {
   IS_LOADING,
@@ -9,8 +8,10 @@ import {
   OPEN_MODAL,
   CLOSE_MODAL
 } from '../action-types';
-import { url } from '../config/api';
-
+import {
+  getMovieDetails,
+  getMoviesList
+} from '../api';
 
 export function openModal() {
   return {
@@ -69,84 +70,70 @@ export function updateSearchList(result) {
   };
 }
 
-export function getMovieDetails(id: string) {
-  return dispatch => {
-    dispatch(isLoading(true));
+export const findMovieDetails = (id: string) => async dispatch => {
+  dispatch(isLoading(true));
 
-    axios.get(`${url}/movie_details.json`, {
-      params: {
-        movie_id: id,
-        with_images: true,
-        with_cast: true
-      }
-    }).then(res => {
-      const { movie } = res.data.data;
-      let genres = [];
-      let torrents = [];
+  try {
+    const response = await getMovieDetails(parseInt(id, 10));
+    const { movie } = response.data;
+    let genres = [];
+    let torrents = [];
 
-      if (movie.genres) {
-        genres = movie.genres.map(genre => ({
-          name: genre,
-          uuid: uuid()
-        }));
-      }
+    if (movie.genres) {
+      genres = movie.genres.map(genre => ({
+        name: genre,
+        uuid: uuid()
+      }));
+    }
 
-      if (movie.torrents) {
-        ({ torrents } = movie);
-      }
+    if (movie.torrents) {
+      ({ torrents } = movie);
+    }
 
-      movie.genres = genres;
-      movie.torrents = torrents;
-      movie.subtitles = [];
+    movie.genres = genres;
+    movie.torrents = torrents;
+    movie.subtitles = [];
 
-      dispatch(isLoading(false));
-      dispatch(updateWindowTitle(`${movie.title_long} - Priv`));
-      dispatch(updateCurrentMovie(movie));
-      return true;
-    }).catch(err => console.error(err, 'ERROR'));
-  };
-}
+    dispatch(isLoading(false));
+    dispatch(updateWindowTitle(`${movie.title_long} - Priv`));
+    dispatch(updateCurrentMovie(movie));
+  } catch (e) {
+    console.log(e, 'ERROR getMovieDetails ON actions');
+  }
+};
 
-export function findMoviesList(options = {}) {
-  return dispatch => {
-    dispatch(isLoading(true));
+export const findMoviesList = (options = {}) => async dispatch => {
+  dispatch(isLoading(true));
 
-    axios.get(`${url}/list_movies.json`, {
-      params: {
-        ...options,
-        with_rt_ratings: true
-      }
-    }).then(res => {
-      let movies = [];
-      if (res.data.data.movie_count > 0) {
-        ({ movies } = res.data.data);
-      }
+  try {
+    const response = await getMoviesList(options);
 
-      dispatch(isLoading(false));
-      dispatch(updateMoviesList(movies));
-      return true;
-    }).catch(err => console.error(err, 'ERROR'));
-  };
-}
+    let movies = [];
+    if (response.data.movie_count > 0) {
+      ({ movies } = response.data);
+    }
 
-export function searchMovies(options = {}) {
-  return dispatch => {
-    dispatch(isLoading(true));
+    dispatch(isLoading(false));
+    dispatch(updateMoviesList(movies));
+  } catch (e) {
+    console.log(e, 'ERROR findMoviesList ON actions');
+  }
+};
 
-    axios.get(`${url}/list_movies.json`, {
-      params: {
-        ...options,
-        with_rt_ratings: true
-      }
-    }).then(res => {
-      let movies = [];
-      if (res.data.data.movie_count > 0) {
-        ({ movies } = res.data.data);
-      }
+export const searchMovies = (options = {}) => async dispatch => {
+  dispatch(isLoading(true));
 
-      dispatch(isLoading(false));
-      dispatch(updateSearchList(movies));
-      return true;
-    }).catch(err => console.error(err, 'ERROR'));
-  };
-}
+  try {
+    const response = await getMoviesList(options);
+
+    let movies = [];
+    if (response.data.movie_count > 0) {
+      ({ movies } = response.data);
+    }
+
+    dispatch(isLoading(false));
+    dispatch(updateSearchList(movies));
+  } catch (e) {
+    console.log(e, 'ERROR searchMovies ON actions');
+  }
+};

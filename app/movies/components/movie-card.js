@@ -10,8 +10,9 @@ type Props = {
     id: number,
     title: string,
     title_long: string,
-    large_cover_image: string,
-    medium_cover_image: string,
+    large_cover_image?: string,
+    medium_cover_image?: string,
+    small_cover_image: string,
     year: number,
     rating: number
   }
@@ -20,7 +21,10 @@ type Props = {
 const MovieCard = (props: Props) => (
   <Link to={`/movie/${props.movie.id}`}>
     <div className={styles.MovieCard}>
-      <img src={props.movie.medium_cover_image} alt={props.movie.title_long} />
+      <img
+        src={props.movie.medium_cover_image || props.movie.small_cover_image}
+        alt={props.movie.title_long}
+      />
 
       <div className={styles.Info}>
         <div style={{ overflow: 'hidden' }}>
