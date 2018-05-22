@@ -12,13 +12,11 @@ let style;
 const PlayerInfoLayout = (props: Props) => {
   if (props.hide) {
     style = {
-      opacity: 1,
-      cursor: 'default'
+      opacity: 1
     };
   } else {
     style = {
-      opacity: 0,
-      cursor: 'none'
+      opacity: 0
     };
   }
 
