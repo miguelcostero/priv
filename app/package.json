@@ -1,8 +1,8 @@
 {
   "name": "priv",
   "productName": "priv",
-  "version": "0.1.0",
-  "description": "Watch movies for free using torrents and web technologies",
+  "version": "0.2.1",
+  "description": "Watch movies for free using torrents",
   "main": "./main.prod.js",
   "author": {
     "name": "Miguel Costero",
@@ -13,7 +13,7 @@
     "electron-rebuild": "node -r babel-register ../internals/scripts/ElectronRebuild.js",
     "postinstall": "npm run electron-rebuild"
   },
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {
     "webtorrent": "^0.98.24"
   }
