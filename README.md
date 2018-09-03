@@ -51,3 +51,11 @@ To package Priv with options:
 $ npm run package -- --[options]
 ```
 
+--------
+
+## Copyright
+- [Miguel Costero](https://miguelcostero.com.ve)
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
