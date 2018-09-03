@@ -58,4 +58,4 @@ $ npm run package -- --[options]
 
 ## License
 
-[MIT](https://opensource.org/licenses/MIT)
+[GPL-3.0](https://opensource.org/licenses/GPL-3.0)
