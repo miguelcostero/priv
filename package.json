@@ -1,8 +1,8 @@
 {
   "name": "priv",
   "productName": "Priv",
-  "version": "0.2.0",
-  "description": "Watch movies for free using torrents and web technologies",
+  "version": "0.2.1",
+  "description": "Watch movies for free using torrents",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --colors",
@@ -82,7 +82,7 @@
     "email": "hello@miguelcostero.com.ve",
     "url": "https://miguelcostero.com.ve"
   },
-  "license": "MIT",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/miguelcostero/priv/issues"
   },

@@ -1,14 +1,14 @@
 // @flow
+import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import * as _ from 'lodash';
+import { bindActionCreators } from 'redux';
 import * as Actions from '../../actions';
-import MovieDetailsLayout from '../components/movie-details-layout';
+import { getMovieSuggestions } from '../../api';
 import GoBack from '../components/go-back';
 import MovieDetails from '../components/movie-details';
-import { getMovieSuggestions } from '../../api';
+import MovieDetailsLayout from '../components/movie-details-layout';
 
 type Props = {
   match: {

@@ -1,10 +1,10 @@
 // @flow
+import { faEye, faStar } from '@fortawesome/fontawesome-free-solid';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faStar, faEye } from '@fortawesome/fontawesome-free-solid';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import ImdbLogo from '../../assets/images/logo-imdb.svg';
 import MovieList from '../../movies/containers/movies';
 import styles from './movie-details.sass';
@@ -27,7 +27,7 @@ type Props = {
     medium_screenshot_image3: string,
     slug: string,
     yt_trailer_code: string,
-    cast: []
+    cast?: []
   },
   suggestions: ?[]
 };
@@ -112,33 +112,36 @@ const MovieDetails = (props: Props) => (
             </div>
 
             <aside className={styles.Sidebar}>
-              <div>
-                <h2 className={styles.DetailsTitle}>Cast</h2>
-                <div className={styles.Cast}>
-                  <ul>
-                    {
-                      props.movie.cast.map(actor => (
-                        <li key={actor.imdb_code}>
-                          <img
-                            src={
-                              actor.url_small_image ||
-                              'https://yts.am/assets/images/actors/thumb/default_avatar.jpg'
-                            }
-                            alt={actor.name}
-                          />
-                          <p>
-                            {actor.name}
-                            {
-                              actor.character_name &&
-                              <span> as <b>{actor.character_name}</b></span>
-                            }
-                          </p>
-                        </li>
-                      ))
-                    }
-                  </ul>
+              {
+                props.movie.cast &&
+                <div>
+                  <h2 className={styles.DetailsTitle}>Cast</h2>
+                  <div className={styles.Cast}>
+                    <ul>
+                      {
+                        props.movie.cast.map(actor => (
+                          <li key={actor.imdb_code}>
+                            <img
+                              src={
+                                actor.url_small_image ||
+                                'https://yts.am/assets/images/actors/thumb/default_avatar.jpg'
+                              }
+                              alt={actor.name}
+                            />
+                            <p>
+                              {actor.name}
+                              {
+                                actor.character_name &&
+                                <span> as <b>{actor.character_name}</b></span>
+                              }
+                            </p>
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  </div>
                 </div>
-              </div>
+              }
 
               <div>
                 <h2 className={styles.DetailsTitle}>Info</h2>
