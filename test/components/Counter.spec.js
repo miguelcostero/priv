@@ -1,9 +1,9 @@
-import { spy } from 'sinon';
-import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import renderer from 'react-test-renderer';
+import { spy } from 'sinon';
 import Counter from '../../app/components/Counter';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -45,9 +45,7 @@ describe('Counter component', () => {
         </Router>
       </div>
     );
-    const tree = renderer
-      .create(counter)
-      .toJSON();
+    const tree = renderer.create(counter).toJSON();
 
     expect(tree).toMatchSnapshot();
   });
