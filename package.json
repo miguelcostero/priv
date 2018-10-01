@@ -1,7 +1,7 @@
 {
   "name": "priv",
   "productName": "Priv",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Watch movies for free using torrents",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
