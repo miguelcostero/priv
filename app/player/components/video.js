@@ -20,58 +20,73 @@ type Props = {
 
 export default class Video extends Component<Props> {
   props: Props;
+
   state = {
     cursor: true
-  }
+  };
 
   componentDidMount() {
-    this.props.getRef(this.video);
+    const { getRef } = this.props;
+    getRef(this.video);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.pause !== this.props.pause) {
+    const { pause } = this.props;
+    if (nextProps.pause !== pause) {
       this.togglePlay();
     }
   }
 
   togglePlay() {
-    if (this.props.pause) {
+    const { pause } = this.props;
+    const { cursor } = this.state;
+
+    if (pause) {
       this.video.play();
     } else {
       this.video.pause();
     }
 
     this.setState({
-      cursor: !this.state.cursor
+      cursor: !cursor
     });
   }
 
   setRef = element => {
     this.video = element;
-  }
+  };
 
   render() {
+    const {
+      handleClick,
+      handleKeyUp,
+      handleMouseMove,
+      handleTimeUpdate,
+      handleSeeking,
+      handleSeeked,
+      subtitle
+    } = this.props;
     return (
       <div
         className={styles.Container}
-        onClick={this.props.handleClick}
-        onKeyUp={this.props.handleKeyUp}
+        onClick={handleClick}
+        onKeyUp={handleKeyUp}
         role="button"
         tabIndex="0"
       >
         <video
           ref={this.setRef}
-          onMouseMove={this.props.handleMouseMove}
-          onTimeUpdate={this.props.handleTimeUpdate}
-          onSeeking={this.props.handleSeeking}
-          onSeeked={this.props.handleSeeked}
+          onMouseMove={handleMouseMove}
+          onTimeUpdate={handleTimeUpdate}
+          onSeeking={handleSeeking}
+          onSeeked={handleSeeked}
         >
           <track
-            key={this.props.subtitle.srcLang}
-            src={this.props.subtitle.src}
+            key={subtitle.srcLang}
+            src={subtitle.src}
             kind="captions"
-            srcLang={this.props.subtitle.srcLang}
-            lang={this.props.subtitle.lang}
+            srcLang={subtitle.srcLang}
+            lang={subtitle.lang}
             default
           />
         </video>

@@ -1,7 +1,7 @@
 // @flow
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/fontawesome-free-solid';
 import styles from './search.sass';
 
 type Props = {
@@ -11,18 +11,15 @@ type Props = {
   value: string
 };
 
-const Search = (props: Props) => (
-  <form
-    className={styles.Search}
-    onSubmit={props.handleSubmit}
-  >
+const Search = ({ handleSubmit, setRef, handleChange, value }: Props) => (
+  <form className={styles.Search} onSubmit={handleSubmit}>
     <input
-      ref={props.setRef}
+      ref={setRef}
       type="text"
       placeholder="Find your favourites movies..."
       name="search"
-      onChange={props.handleChange}
-      value={props.value}
+      onChange={handleChange}
+      value={value}
     />
     <button type="submit">
       <FontAwesomeIcon icon={faSearch} />

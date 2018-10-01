@@ -1,16 +1,14 @@
 // @flow
-import React, { type Node } from 'react';
+import React, { Node } from 'react';
 import styles from './top-bar.sass';
 
 type Props = {
   children: Node
 };
 
-const TopBar = (props: Props) => (
+const TopBar = ({ children }: Props) => (
   <div className={styles.TopBar}>
-    <div className={styles.Container}>
-      {props.children}
-    </div>
+    <div className={styles.Container}>{children}</div>
   </div>
 );
 

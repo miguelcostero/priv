@@ -1,16 +1,16 @@
 // @flow
-import React from 'react';
+import React, { Node } from 'react';
 import styles from './player-info-layout.sass';
 
 type Props = {
   hide: boolean,
-  children: {}
+  children: Node
 };
 
 let style;
 
-const PlayerInfoLayout = (props: Props) => {
-  if (props.hide) {
+const PlayerInfoLayout = ({ hide, children }: Props) => {
+  if (hide) {
     style = {
       opacity: 1
     };
@@ -21,11 +21,8 @@ const PlayerInfoLayout = (props: Props) => {
   }
 
   return (
-    <div
-      className={styles.PlayerInfoLayout}
-      style={style}
-    >
-      {props.children}
+    <div className={styles.PlayerInfoLayout} style={style}>
+      {children}
     </div>
   );
 };

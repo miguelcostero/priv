@@ -6,10 +6,8 @@ type Props = {
   children: React.Node
 };
 
-const SettingsLayout = (props: Props) => (
-  <div className={styles.SettingsLayout}>
-    {props.children}
-  </div>
+const SettingsLayout = ({ children }: Props) => (
+  <div className={styles.SettingsLayout}>{children}</div>
 );
 
 export default SettingsLayout;

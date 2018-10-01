@@ -1,15 +1,13 @@
 // @flow
-import React from 'react';
+import React, { Node } from 'react';
 import styles from './buttons-left-layout.sass';
 
 type Props = {
-  children: {}
+  children: Node
 };
 
-const ButtonsLeftLayout = (props: Props) => (
-  <div className={styles.Left}>
-    {props.children}
-  </div>
+const ButtonsLeftLayout = ({ children }: Props) => (
+  <div className={styles.Left}>{children}</div>
 );
 
 export default ButtonsLeftLayout;

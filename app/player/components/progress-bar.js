@@ -10,24 +10,30 @@ type Props = {
   setRef: () => void
 };
 
-export default function ProgressBar(props: Props) {
+export default function ProgressBar({
+  handleProgressChange,
+  setRef,
+  downloaded,
+  videoDuration,
+  currentTime
+}: Props) {
   return (
     <div
       className={styles.ProgressBarContainer}
-      onClick={props.handleProgressChange}
+      onClick={handleProgressChange}
       onKeyUp={() => {}}
       role="button"
       tabIndex="0"
-      ref={props.setRef}
+      ref={setRef}
     >
       <div className={styles.ProgressBar}>
         <div
           className={styles.CurrentDownloadedBar}
-          style={{ width: `${props.downloaded}%` }}
+          style={{ width: `${downloaded}%` }}
         />
         <div
           className={styles.CurrentTimeBar}
-          style={{ width: `${(100 / props.videoDuration) * props.currentTime}%` }}
+          style={{ width: `${(100 / videoDuration) * currentTime}%` }}
         />
       </div>
     </div>

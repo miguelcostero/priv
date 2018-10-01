@@ -10,24 +10,22 @@ type Props = {
   }
 };
 
-export default function Subtitles(props: Props) {
+export default function Subtitles({
+  currentSubtitle,
+  handleChange,
+  subtitles
+}: Props) {
   return (
     <div className={styles.Subtitles}>
-      <select
-        value={props.currentSubtitle.srcLang || ''}
-        onChange={props.handleChange}
-      >
-        <option value="" disabled>--subtitles--</option>
-        {
-          props.subtitles.map(subtitle => (
-            <option
-              value={subtitle.langShort}
-              key={subtitle.uuid}
-            >
-              {subtitle.lang.replace(/\b\w/g, l => l.toUpperCase())}
-            </option>
-          ))
-        }
+      <select value={currentSubtitle.srcLang || ''} onChange={handleChange}>
+        <option value="" disabled>
+          --subtitles--
+        </option>
+        {subtitles.map(subtitle => (
+          <option value={subtitle.langShort} key={subtitle.uuid}>
+            {subtitle.lang.replace(/\b\w/g, l => l.toUpperCase())}
+          </option>
+        ))}
       </select>
     </div>
   );

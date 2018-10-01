@@ -27,47 +27,49 @@ type Props = {
 
 class MovieDetailsPage extends Component<Props> {
   props: Props;
+
   state = {
     suggestions: []
-  }
+  };
 
   componentDidMount() {
-    this.getMovieDetails(this.props.match.params.id);
+    const { match } = this.props;
+    this.getMovieDetails(match.params.id);
   }
 
   componentWillReceiveProps(newProps) {
-    if (this.props.match.params.id !== newProps.match.params.id) {
+    const { match } = this.props;
+    if (match.params.id !== newProps.match.params.id) {
       this.getMovieDetails(newProps.match.params.id);
     }
   }
 
   getMovieDetails = (id: string) => {
-    this.props.actions.findMovieDetails(id);
+    const { actions } = this.props;
+    actions.findMovieDetails(id);
+    getMovieSuggestions(parseInt(id, 10))
+      .then(res => {
+        this.setState({
+          suggestions: res.data.movies
+        });
 
-    getMovieSuggestions(parseInt(id, 10)).then(res => {
-      this.setState({
-        suggestions: res.data.movies
-      });
-
-      return true;
-    }).catch(err => console.error(err, 'ERROR'));
-  }
+        return true;
+      })
+      .catch(err => console.error(err, 'ERROR'));
+  };
 
   render() {
-    document.title = this.props.windowTitle;
-    const { movie } = this.props;
+    const { movie, windowTitle } = this.props;
+    const { suggestions } = this.state;
+    document.title = windowTitle;
 
     return (
       <MovieDetailsLayout>
         <GoBack path="/" />
 
-        {
-          (!_.isEmpty(movie)) &&
-          <MovieDetails
-            movie={movie}
-            suggestions={this.state.suggestions}
-          />
-        }
+        {!_.isEmpty(movie) && (
+          <MovieDetails movie={movie} suggestions={suggestions} />
+        )}
       </MovieDetailsLayout>
     );
   }
@@ -86,4 +88,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MovieDetailsPage));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(MovieDetailsPage)
+);

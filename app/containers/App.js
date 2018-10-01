@@ -14,15 +14,12 @@ class App extends Component<Props> {
   props: Props;
 
   render() {
+    const { loading, children } = this.props;
     return (
       <HandleError>
-        {
-          (this.props.loading) && <Loader />
-        }
+        {loading && <Loader />}
 
-        <div>
-          {this.props.children}
-        </div>
+        <div>{children}</div>
       </HandleError>
     );
   }
@@ -30,8 +27,13 @@ class App extends Component<Props> {
 
 function mapStateToProps(state) {
   return {
-    loading: state.isLoading.active,
+    loading: state.isLoading.active
   };
 }
 
-export default withRouter(connect(mapStateToProps, null)(App));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    null
+  )(App)
+);

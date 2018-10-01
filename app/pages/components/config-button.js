@@ -1,17 +1,17 @@
 // @flow
+import { faCog } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faCog } from '@fortawesome/fontawesome-free-solid';
 import styles from './config-button.sass';
 
 type Props = {
   handleClick: () => void
 };
 
-const ConfigButton = (props: Props) => (
+const ConfigButton = ({ handleClick }: Props) => (
   <div
     className={styles.ConfigButton}
-    onClick={props.handleClick}
+    onClick={handleClick}
     onKeyUp={() => {}}
     role="button"
     tabIndex="-1"

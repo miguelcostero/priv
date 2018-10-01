@@ -1,7 +1,7 @@
 // @flow
-import * as React from 'react';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faFolderOpen } from '@fortawesome/fontawesome-free-solid';
+import { faFolderOpen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
 import styles from './cache-folder-selector.sass';
 
 type Props = {
@@ -11,7 +11,12 @@ type Props = {
   handleChange: () => void
 };
 
-const CacheFolderSelector = (props: Props) => (
+const CacheFolderSelector = ({
+  path,
+  handleClick,
+  handleChange,
+  setRef
+}: Props) => (
   <div className={styles.CacheFolderSelector}>
     <div className={styles.Title}>
       <h3>Cache folder path</h3>
@@ -19,18 +24,16 @@ const CacheFolderSelector = (props: Props) => (
     </div>
 
     <div className={styles.PathContainer}>
-      <p>{props.path}</p>
-      <button
-        onClick={props.handleClick}
-      >
+      <p>{path}</p>
+      <button type="button" onClick={handleClick}>
         <FontAwesomeIcon icon={faFolderOpen} />
       </button>
     </div>
 
     <input
       type="file"
-      ref={props.setRef}
-      onChange={props.handleChange}
+      ref={setRef}
+      onChange={handleChange}
       webkitdirectory="true"
       style={{ display: 'none' }}
     />

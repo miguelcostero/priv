@@ -1,8 +1,7 @@
 // @flow
-import React from 'react';
-import type { Node } from 'react';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import faTimes from '@fortawesome/fontawesome-free-solid/faTimes';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Node } from 'react';
 import styles from './modal.sass';
 
 type Props = {
@@ -10,15 +9,10 @@ type Props = {
   handleClick: () => void
 };
 
-const Modal = (props: Props) => (
+const Modal = ({ children, handleClick }: Props) => (
   <div className={styles.Modal}>
-    <div className={styles.Wrapper}>
-      {props.children}
-    </div>
-    <button
-      onClick={props.handleClick}
-      className={styles.ModalClose}
-    >
+    <div className={styles.Wrapper}>{children}</div>
+    <button type="button" onClick={handleClick} className={styles.ModalClose}>
       <FontAwesomeIcon icon={faTimes} />
     </button>
   </div>

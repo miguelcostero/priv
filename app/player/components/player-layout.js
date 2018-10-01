@@ -8,13 +8,13 @@ type Props = {
   handleDoubleClick: () => void
 };
 
-const PlayerLayout = (props: Props) => (
+const PlayerLayout = ({ children, setRef, handleDoubleClick }: Props) => (
   <div
     className={styles.PlayerLayout}
-    ref={props.setRef}
-    onDoubleClick={props.handleDoubleClick}
+    ref={setRef}
+    onDoubleClick={handleDoubleClick}
   >
-    {props.children}
+    {children}
   </div>
 );
 

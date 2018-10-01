@@ -15,43 +15,46 @@ type Props = {
 
 class SearchContainer extends Component<Props> {
   props: Props;
+
   state = {
     value: ''
-  }
+  };
 
   handleSubmit = event => {
     event.preventDefault();
-
+    const { actions: $actions } = this.props;
     if (!this.input.value.length > 0) {
-      this.props.actions.updateSearchList([]);
+      $actions.updateSearchList([]);
     } else {
-      this.props.actions.searchMovies({
+      $actions.searchMovies({
         query_term: this.input.value
       });
     }
-  }
+  };
 
   setInputRef = element => {
     this.input = element;
-  }
+  };
 
   handleInputChange = event => {
+    const { actions: $actions } = this.props;
     this.setState({
       value: event.target.value
     });
 
     if (!event.target.value.length > 0) {
-      this.props.actions.updateSearchList([]);
+      $actions.updateSearchList([]);
     }
-  }
+  };
 
   render() {
+    const { value } = this.state;
     return (
       <Search
         setRef={this.setInputRef}
         handleSubmit={this.handleSubmit}
         handleChange={this.handleInputChange}
-        value={this.state.value}
+        value={value}
       />
     );
   }
@@ -63,4 +66,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(SearchContainer);
+export default connect(
+  null,
+  mapDispatchToProps
+)(SearchContainer);

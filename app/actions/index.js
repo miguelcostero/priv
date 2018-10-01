@@ -1,17 +1,14 @@
 import uuid from 'uuid/v4';
 import {
+  CLOSE_MODAL,
   IS_LOADING,
+  OPEN_MODAL,
+  SEARCH_MOVIES,
   UPDATE_CURRENT_MOVIE,
   UPDATE_DOCUMENT_TITLE,
-  UPDATE_MOVIES_LIST,
-  SEARCH_MOVIES,
-  OPEN_MODAL,
-  CLOSE_MODAL
+  UPDATE_MOVIES_LIST
 } from '../action-types';
-import {
-  getMovieDetails,
-  getMoviesList
-} from '../api';
+import { getMovieDetails, getMoviesList } from '../api';
 
 export function openModal() {
   return {

@@ -1,15 +1,13 @@
 // @flow
-import React from 'react';
+import React, { Node } from 'react';
 import styles from './controls.sass';
 
 type Props = {
-  children: {}
+  children: Node
 };
 
-const Controls = (props: Props) => (
-  <div className={styles.Controls}>
-    {props.children}
-  </div>
+const Controls = ({ children }: Props) => (
+  <div className={styles.Controls}>{children}</div>
 );
 
 export default Controls;

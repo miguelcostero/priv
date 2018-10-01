@@ -1,4 +1,2 @@
-export default {
-  url: 'https://yts.am/api/v2/',
-  torrent: 'https://yts.am/torrent/download/'
-};
+export const url = 'https://yts.am/api/v2/';
+export const torrent = 'https://yts.am/torrent/download/';

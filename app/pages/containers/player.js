@@ -1,9 +1,9 @@
 // @flow
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Player from '../../player/containers/player';
+import { bindActionCreators } from 'redux';
 import * as Actions from '../../actions';
+import Player from '../../player/containers/player';
 
 function mapStateToProps(state) {
   return {
@@ -17,4 +17,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Player));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Player)
+);

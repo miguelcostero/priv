@@ -1,5 +1,5 @@
 // @flow
-import React, { type Node } from 'react';
+import React, { Node } from 'react';
 import styles from './movies-layout.sass';
 
 type Props = {
@@ -7,14 +7,14 @@ type Props = {
   perLine: number
 };
 
-const MoviesLayout = (props: Props) => (
+const MoviesLayout = ({ perLine, children }: Props) => (
   <div
     className={styles.MoviesLayout}
     style={{
-      gridTemplateColumns: `repeat(${props.perLine}, 1fr)`
+      gridTemplateColumns: `repeat(${perLine}, 1fr)`
     }}
   >
-    {props.children}
+    {children}
   </div>
 );
 

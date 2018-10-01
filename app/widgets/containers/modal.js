@@ -1,5 +1,5 @@
 // @flow
-import { Component, type Node } from 'react';
+import { Component, Node } from 'react';
 import { createPortal } from 'react-dom';
 
 type Props = {
@@ -10,10 +10,8 @@ class ModalContainer extends Component<Props> {
   props: Props;
 
   render() {
-    return createPortal(
-      this.props.children,
-      document.getElementById('modal-container')
-    );
+    const { children } = this.props;
+    return createPortal(children, document.getElementById('modal-container'));
   }
 }
 

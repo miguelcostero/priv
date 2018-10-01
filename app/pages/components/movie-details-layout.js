@@ -1,14 +1,12 @@
-import React, { type Node } from 'react';
+import React, { Node } from 'react';
 import styles from './movie-details-layout.sass';
 
 type Props = {
   children: Node
-}
+};
 
-const MovieDetailsLayout = (props: Props) => (
-  <div className={styles.MovieDetailsLayout}>
-    {props.children}
-  </div>
+const MovieDetailsLayout = ({ children }: Props) => (
+  <div className={styles.MovieDetailsLayout}>{children}</div>
 );
 
 export default MovieDetailsLayout;

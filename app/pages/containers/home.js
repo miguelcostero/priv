@@ -1,19 +1,19 @@
 // @flow
+import * as _ from 'lodash';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import * as _ from 'lodash';
+import { bindActionCreators } from 'redux';
 import * as Actions from '../../actions';
-import HomeLayout from '../components/home-layout';
-import Search from '../../widgets/containers/search';
-import TopBar from '../components/top-bar';
-import ConfigButton from '../components/config-button';
 import MovieList from '../../movies/containers/movies';
-import ModalContainer from '../../widgets/containers/modal';
-import Modal from '../../widgets/components/modal';
-import SearchResult from '../components/search-result';
 import AppSettings from '../../settings/containers/settings';
+import Modal from '../../widgets/components/modal';
+import ModalContainer from '../../widgets/containers/modal';
+import Search from '../../widgets/containers/search';
+import ConfigButton from '../components/config-button';
+import HomeLayout from '../components/home-layout';
+import SearchResult from '../components/search-result';
+import TopBar from '../components/top-bar';
 
 type Props = {
   windowTitle: string,
@@ -35,64 +35,59 @@ class HomePage extends Component<Props> {
   props: Props;
 
   componentWillMount() {
-    this.props.actions.updateWindowTitle('Priv - Watch movies for free');
+    const { actions } = this.props;
+    actions.updateWindowTitle('Priv - Watch movies for free');
   }
 
   componentDidMount() {
-    if (_.isEmpty(this.props.movies)) {
-      this.props.actions.findMoviesList({
+    const { movies, actions } = this.props;
+    if (_.isEmpty(movies)) {
+      actions.findMoviesList({
         sort_by: 'date_added,like_count'
       });
     }
   }
 
   handleConfigButtonClick = () => {
-    console.log('click config');
-    this.props.actions.openModal();
-  }
+    const { actions } = this.props;
+    actions.openModal();
+  };
 
   handleCloseModal = () => {
-    this.props.actions.closeModal();
-  }
+    const { actions } = this.props;
+    actions.closeModal();
+  };
 
   render() {
-    document.title = this.props.windowTitle;
+    const { windowTitle, search, movies, modal } = this.props;
+    document.title = windowTitle;
 
     return (
       <HomeLayout>
         <TopBar>
           <h1 style={{ fontWeight: 900 }}>
-            <span style={{ color: '#0CCA4A' }}>P</span>riv
+            <span style={{ color: '#0CCA4A' }}>P</span>
+            riv
           </h1>
 
           <Search />
-          <ConfigButton
-            handleClick={this.handleConfigButtonClick}
-          />
+          <ConfigButton handleClick={this.handleConfigButtonClick} />
         </TopBar>
-        {
-          (!_.isEmpty(this.props.search)) &&
-          <SearchResult
-            result={this.props.search}
-          />
-        }
+        {!_.isEmpty(search) && <SearchResult result={search} />}
         <div
-          style={(_.isEmpty(this.props.search)) ? { paddingTop: '95px' } : { paddingTop: '30px' }}
+          style={
+            _.isEmpty(search) ? { paddingTop: '95px' } : { paddingTop: '30px' }
+          }
         >
-          <MovieList
-            movies={this.props.movies}
-          />
+          <MovieList movies={movies} />
         </div>
-        {
-          this.props.modal.visibility &&
-            <ModalContainer>
-              <Modal
-                handleClick={this.handleCloseModal}
-              >
-                <AppSettings />
-              </Modal>
-            </ModalContainer>
-        }
+        {modal.visibility && (
+          <ModalContainer>
+            <Modal handleClick={this.handleCloseModal}>
+              <AppSettings />
+            </Modal>
+          </ModalContainer>
+        )}
       </HomeLayout>
     );
   }
@@ -113,4 +108,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomePage));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(HomePage)
+);

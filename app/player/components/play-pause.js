@@ -1,7 +1,7 @@
 // @flow
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faPlay, faPause } from '@fortawesome/fontawesome-free-solid';
 import styles from './play-pause.sass';
 
 type Props = {
@@ -9,18 +9,15 @@ type Props = {
   handleClick: () => void
 };
 
-export default function PlayPause(props: Props) {
+export default function PlayPause({ pause, handleClick }: Props) {
   return (
     <div className={styles.PlayPause}>
-      <button
-        onClick={props.handleClick}
-      >
-        {
-          props.pause ?
-            <FontAwesomeIcon icon={faPlay} />
-          :
-            <FontAwesomeIcon icon={faPause} />
-        }
+      <button type="button" onClick={handleClick}>
+        {pause ? (
+          <FontAwesomeIcon icon={faPlay} />
+        ) : (
+          <FontAwesomeIcon icon={faPause} />
+        )}
       </button>
     </div>
   );

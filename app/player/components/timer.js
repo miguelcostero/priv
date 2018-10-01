@@ -17,17 +17,18 @@ function formattedTime(secs) {
   const minutes = parseInt((secs / 60) % 60, 10);
   const seconds = parseInt(secs % 60, 10);
 
-  return (hours > 0) ?
-    `${hours}:${leftPad(minutes.toString())}:${leftPad(seconds.toString())}`
-    :
-    `${minutes}:${leftPad(seconds.toString())}`;
+  return hours > 0
+    ? `${hours}:${leftPad(minutes.toString())}:${leftPad(seconds.toString())}`
+    : `${minutes}:${leftPad(seconds.toString())}`;
 }
 
-export default function Timer(props: Props) {
+export default function Timer({ currentTime, duration }: Props) {
   return (
     <div className={styles.Timer}>
       <p>
-        <span>{formattedTime(props.currentTime)} / {formattedTime(props.duration)}</span>
+        <span>
+          {formattedTime(currentTime)} / {formattedTime(duration)}
+        </span>
       </p>
     </div>
   );

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, type Node } from 'react';
+import React, { Component, Node } from 'react';
 import RegularError from '../components/regular-error';
 
 type Props = {
@@ -10,24 +10,24 @@ export default class HandleError extends Component<Props> {
   props: Props;
 
   state = {
-    handleError: false,
-  }
+    handleError: false
+  };
 
   componentDidCatch(error, info) {
     console.log(info, 'ERROR CATCHED');
 
     this.setState({
-      handleError: true,
+      handleError: true
     });
     // envía este error a un servicio como Sentry
   }
 
   render() {
-    if (this.state.handleError) {
-      return (
-        <RegularError />
-      );
+    const { handleError } = this.state;
+    const { children } = this.props;
+    if (handleError) {
+      return <RegularError />;
     }
-    return this.props.children;
+    return children;
   }
 }

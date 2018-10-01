@@ -1,26 +1,26 @@
 // @flow
-import React, { Component } from 'react';
-import WebTorrent from 'webtorrent';
 import path from 'path';
+import React, { Component } from 'react';
 import uuid from 'uuid/v4';
+import WebTorrent from 'webtorrent';
 import yifysubtitles from 'yifysubtitles';
-import Video from '../components/video';
-import Controls from '../components/controls';
-import api from '../../config/api';
+import { torrent } from '../../config/api';
 import { getDownloadPath } from '../../config/cache';
-import PlayerLayout from '../components/player-layout';
-import PlayPause from '../components/play-pause';
-import FullScreen from '../components/full-screen';
-import ProgressBar from '../components/progress-bar';
-import Volume from '../components/volume';
-import Timer from '../components/timer';
-import Subtitles from '../components/subtitles';
-import GoBack from '../components/go-back';
-import Title from '../components/title';
 import ControlButtonsLayout from '../components/buttons-layout';
 import Left from '../components/buttons-left-layout';
 import Right from '../components/buttons-right-layout';
+import Controls from '../components/controls';
+import FullScreen from '../components/full-screen';
+import GoBack from '../components/go-back';
+import PlayPause from '../components/play-pause';
 import PlayerInfoLayout from '../components/player-info-layout';
+import PlayerLayout from '../components/player-layout';
+import ProgressBar from '../components/progress-bar';
+import Subtitles from '../components/subtitles';
+import Timer from '../components/timer';
+import Title from '../components/title';
+import Video from '../components/video';
+import Volume from '../components/volume';
 
 type Props = {
   match: {
@@ -35,19 +35,20 @@ type Props = {
     subtitles: {}
   },
   actions: {
-    updateCurrentMovie: (movie) => void,
+    updateCurrentMovie: movie => void,
     isLoading: (active: boolean) => void
   }
 };
 
 export default class Player extends Component<Props> {
   props: Props;
+
   state = {
     pause: false,
     volumeStatus: 'off',
     video: {
       duration: 0,
-      currentTime: 0,
+      currentTime: 0
     },
     currentSubtitle: {
       src: '',
@@ -61,81 +62,89 @@ export default class Player extends Component<Props> {
       downloadSpeed: 0,
       progress: 0
     }
-  }
+  };
 
   componentDidMount() {
-    this.props.actions.isLoading(true);
+    const { actions, match } = this.props;
+    actions.isLoading(true);
     this.togglePlay();
-    getDownloadPath().then(downloadPath => {
-      const torrentUrl = `${api.torrent}/${this.props.match.params.hash}`;
-      const options = {
-        path: downloadPath
-      };
+    getDownloadPath()
+      .then(downloadPath => {
+        const torrentUrl = `${torrent}/${match.params.hash}`;
+        const options = {
+          path: downloadPath
+        };
 
-      this.client.add(torrentUrl, options);
+        this.client.add(torrentUrl, options);
 
-      this.client.on('torrent', torrent => {
-        const video = torrent.files.find(file => file.name.endsWith('.mp4'));
-        const videoPath = path.resolve(downloadPath, video.path.replace(video.name, ''));
+        this.client.on('torrent', t => {
+          const video = t.files.find(file => file.name.endsWith('.mp4'));
+          const videoPath = path.resolve(
+            downloadPath,
+            video.path.replace(video.name, '')
+          );
 
-        console.log(video, 'VIDEO');
+          console.log(video, 'VIDEO');
 
-        video.renderTo(this.video, {
-          autoplay: false,
-          controls: false
-        }, (err) => {
-          if (err) console.log(err, 'ERROR ON RENDER');
-          else {
-            yifysubtitles(this.props.movie.imdb_code, {
-              path: videoPath,
-              langs: [
-                'es',
-                'en',
-                'fr'
-              ]
-            }).then(res => {
-              console.log(res, 'YIFY SUBTITLES');
-              this.props.actions.isLoading(false);
-              this.togglePlay();
+          video.renderTo(
+            this.video,
+            {
+              autoplay: false,
+              controls: false
+            },
+            err => {
+              if (err) console.log(err, 'ERROR ON RENDER');
+              else {
+                yifysubtitles(movie.imdb_code, {
+                  path: videoPath,
+                  langs: ['es', 'en', 'fr']
+                })
+                  .then(res => {
+                    console.log(res, 'YIFY SUBTITLES');
+                    actions.isLoading(false);
+                    this.togglePlay();
 
-              // fomrat subtitles form
-              const subtitles = res.map(sub => ({
-                ...sub,
-                uuid: uuid()
-              }));
+                    // fomrat subtitles form
+                    const subtitles = res.map(sub => ({
+                      ...sub,
+                      uuid: uuid()
+                    }));
 
-              const movie = Object.assign(this.props.movie, {
-                subtitles
-              });
+                    const movie = Object.assign(movie, {
+                      subtitles
+                    });
 
-              this.props.actions.updateCurrentMovie(movie);
-              return true;
-            }).catch(error => {
-              console.error(error, 'ERROR GETTING SUBTITLES');
-              this.props.actions.isLoading(false);
-              this.togglePlay();
-            });
-          }
-        });
-
-        torrent.on('download', bytes => {
-          this.setState({
-            data: {
-              currentBytes: bytes,
-              downloaded: torrent.downloaded,
-              downloadSpeed: torrent.downloadSpeed,
-              progress: torrent.progress
+                    actions.updateCurrentMovie(movie);
+                    return true;
+                  })
+                  .catch(error => {
+                    console.error(error, 'ERROR GETTING SUBTITLES');
+                    actions.isLoading(false);
+                    this.togglePlay();
+                  });
+              }
             }
+          );
+
+          t.on('download', bytes => {
+            this.setState({
+              data: {
+                currentBytes: bytes,
+                downloaded: t.downloaded,
+                downloadSpeed: t.downloadSpeed,
+                progress: t.progress
+              }
+            });
           });
         });
-      });
 
-      this.client.on('error', err => {
-        console.error(err, 'ERROR ON WEBTORRENT CLIENT');
-      });
+        this.client.on('error', err => {
+          console.error(err, 'ERROR ON WEBTORRENT CLIENT');
+        });
 
-      return true;
-    }).catch(err => console.error(err, 'COULD NOT CREATE NEW FOLDER'));
+        return true;
+      })
+      .catch(err => console.error(err, 'COULD NOT CREATE NEW FOLDER'));
   }
 
   componentWillUnmount() {
@@ -147,18 +156,20 @@ export default class Player extends Component<Props> {
   }
 
   client = new WebTorrent();
+
   timeOut = null;
 
   getVideoRef = element => {
     this.video = element;
-  }
+  };
 
   setRefPlayer = element => {
     this.player = element;
-  }
+  };
 
   handleMouseMove = () => {
-    if (!this.state.showInfo) {
+    const { showInfo } = this.state;
+    if (!showInfo) {
       this.setState({
         showInfo: true
       });
@@ -169,7 +180,7 @@ export default class Player extends Component<Props> {
         });
       }, 2500);
     }
-  }
+  };
 
   handleFullScreenClick = () => {
     if (!document.webkitIsFullScreen) {
@@ -177,14 +188,14 @@ export default class Player extends Component<Props> {
     } else {
       document.webkitExitFullscreen();
     }
-  }
+  };
 
   handleKeyUpToTogglePlay = event => {
     event.preventDefault();
     if (event.keyCode === 32) {
       this.togglePlay();
     }
-  }
+  };
 
   handleTimeUpdate = () => {
     this.setState({
@@ -193,19 +204,20 @@ export default class Player extends Component<Props> {
         duration: this.video.duration
       }
     });
-  }
+  };
 
   togglePlay = () => {
+    const { pause } = this.state;
     this.setState({
-      pause: !this.state.pause
+      pause: !pause
     });
-  }
+  };
 
   handleVolumeChange = event => {
     const volume = event.target.value;
     this.video.volume = volume;
     this.changeVolumeIcon(volume);
-  }
+  };
 
   toggleMute = () => {
     const currentVolume = this.video.volume;
@@ -219,7 +231,7 @@ export default class Player extends Component<Props> {
       this.inputVolumeRange.value = 1;
       this.changeVolumeIcon(1);
     }
-  }
+  };
 
   changeVolumeIcon = volume => {
     if (volume >= 0.5) {
@@ -235,102 +247,114 @@ export default class Player extends Component<Props> {
         volumeStatus: 'mute'
       });
     }
-  }
+  };
 
   getRefVolumeRange = element => {
     this.inputVolumeRange = element;
-  }
+  };
 
   handleProgressChange = event => {
+    const { video } = this.state;
     const clickPositionProgressBar = event.pageX - this.progressBar.offsetLeft;
     const progressBarWidth = this.progressBar.offsetWidth;
     const clickPosition = clickPositionProgressBar / progressBarWidth;
-    const newCurrentTime = this.state.video.duration * clickPosition;
+    const newCurrentTime = video.duration * clickPosition;
     this.video.currentTime = newCurrentTime;
-  }
+  };
 
   getProgressBarRef = element => {
     this.progressBar = element;
-  }
+  };
 
   handleSubtitleChange = event => {
-    const { subtitles } = this.props.movie;
-    const selectedSubtitle = subtitles.find(sub => sub.langShort === event.target.value);
+    const {
+      movie: { subtitles }
+    } = this.props;
+    const selectedSubtitle = subtitles.find(
+      sub => sub.langShort === event.target.value
+    );
 
     this.setState({
-      currentSubtitle: Object.assign({}, {
-        srcLang: selectedSubtitle.langShort,
-        src: selectedSubtitle.path,
-        lang: selectedSubtitle.lang.replace(/\b\w/g, l => l.toUpperCase())
-      })
+      currentSubtitle: Object.assign(
+        {},
+        {
+          srcLang: selectedSubtitle.langShort,
+          src: selectedSubtitle.path,
+          lang: selectedSubtitle.lang.replace(/\b\w/g, l => l.toUpperCase())
+        }
+      )
     });
-  }
+  };
 
   handleSeeking = () => {
-    this.props.actions.isLoading(true);
-  }
+    const { actions } = this.props;
+    actions.isLoading(true);
+  };
 
   handleSeeked = () => {
-    this.props.actions.isLoading(false);
-  }
+    const { actions } = this.props;
+    actions.isLoading(false);
+  };
 
   render() {
+    const { movie } = this.props;
+    const {
+      showInfo,
+      pause,
+      video,
+      volumeStatus,
+      data,
+      currentSubtitle
+    } = this.state;
     return (
       <PlayerLayout
         handleDoubleClick={this.handleFullScreenClick}
         setRef={this.setRefPlayer}
       >
-        <PlayerInfoLayout
-          hide={(this.state.showInfo || this.state.pause)}
-        >
-          <GoBack path={`/movie/${this.props.movie.id}`} />
-          <Title title={this.props.movie.title} />
+        <PlayerInfoLayout hide={showInfo || pause}>
+          <GoBack path={`/movie/${movie.id}`} />
+          <Title title={movie.title} />
           <Controls>
             <ControlButtonsLayout>
               <ProgressBar
-                currentTime={this.state.video.currentTime}
-                videoDuration={this.state.video.duration}
-                downloaded={this.state.data.progress * 100}
+                currentTime={video.currentTime}
+                videoDuration={video.duration}
+                downloaded={data.progress * 100}
                 handleProgressChange={this.handleProgressChange}
                 setRef={this.getProgressBarRef}
               />
               <Left>
-                <PlayPause
-                  pause={this.state.pause}
-                  handleClick={this.togglePlay}
-                />
+                <PlayPause pause={pause} handleClick={this.togglePlay} />
                 <Volume
                   handleVolumeChange={this.handleVolumeChange}
-                  status={this.state.volumeStatus}
+                  status={volumeStatus}
                   toggleMute={this.toggleMute}
                   setRef={this.getRefVolumeRange}
                 />
                 <Timer
-                  duration={this.state.video.duration}
-                  currentTime={this.state.video.currentTime}
+                  duration={video.duration}
+                  currentTime={video.currentTime}
                 />
               </Left>
               <Right>
                 <Subtitles
-                  subtitles={this.props.movie.subtitles}
+                  subtitles={movie.subtitles}
                   handleChange={this.handleSubtitleChange}
-                  currentSubtitle={this.state.currentSubtitle}
+                  currentSubtitle={currentSubtitle}
                 />
-                <FullScreen
-                  handleClick={this.handleFullScreenClick}
-                />
+                <FullScreen handleClick={this.handleFullScreenClick} />
               </Right>
             </ControlButtonsLayout>
           </Controls>
         </PlayerInfoLayout>
         <Video
-          pause={this.state.pause}
+          pause={pause}
           getRef={this.getVideoRef}
           handleMouseMove={this.handleMouseMove}
           handleTimeUpdate={this.handleTimeUpdate}
           handleClick={this.togglePlay}
           handleKeyUp={this.handleKeyUpToTogglePlay}
-          subtitle={this.state.currentSubtitle}
+          subtitle={currentSubtitle}
           handleSeeking={this.handleSeeking}
           handleSeeked={this.handleSeeked}
         />

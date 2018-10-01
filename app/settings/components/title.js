@@ -6,9 +6,9 @@ type Props = {
   title: string
 };
 
-const Title = (props: Props) => (
+const Title = ({ title }: Props) => (
   <div className={styles.Title}>
-    <h1>{props.title}</h1>
+    <h1>{title}</h1>
   </div>
 );
 

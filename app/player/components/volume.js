@@ -1,7 +1,11 @@
 // @flow
+import {
+  faVolumeDown,
+  faVolumeOff,
+  faVolumeUp
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faVolumeDown, faVolumeOff } from '@fortawesome/fontawesome-free-solid';
 import styles from './volume.sass';
 
 type Props = {
@@ -13,6 +17,7 @@ type Props = {
 
 export default class Volume extends Component<props> {
   props: Props;
+
   state = {
     icon: faVolumeUp
   };
@@ -44,19 +49,13 @@ export default class Volume extends Component<props> {
   }
 
   render() {
-    const {
-      handleVolumeChange,
-      toggleMute,
-      setRef
-    } = this.props;
+    const { handleVolumeChange, toggleMute, setRef } = this.props;
+    const { icon } = this.state;
 
     return (
       <div className={styles.Volume}>
-        <button>
-          <FontAwesomeIcon
-            icon={this.state.icon}
-            onClick={toggleMute}
-          />
+        <button type="button">
+          <FontAwesomeIcon icon={icon} onClick={toggleMute} />
 
           <div className={styles.Range}>
             <input
