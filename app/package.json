@@ -1,7 +1,7 @@
 {
   "name": "priv",
   "productName": "priv",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Watch movies for free using torrents",
   "main": "./main.prod.js",
   "author": {
