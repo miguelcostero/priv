@@ -1,0 +1,65 @@
+.Container
+  position: relative
+  width: 100vw
+  height: 100vh
+  display: block
+  outline: none
+
+  video
+    width: 100% !important
+    height: 100% !important
+    vertical-align: middle
+
+    &::-webkit-media-text-track-container
+      position: relative
+      width: 100%
+      overflow: hidden
+      padding-bottom: 5px
+      padding-top: -10px
+      font: 22px sans-serif
+      text-align: center
+      color: rgba(255, 255, 255, 1)
+      letter-spacing: normal
+      word-spacing: normal
+      text-transform: none
+      text-indent: 0
+      text-decoration: none
+      pointer-events: none
+      -webkit-user-select: none
+      word-break: break-word
+      flex: 1 1
+
+    &::-webkit-media-text-track-region
+      position: absolute
+      line-height: 5.33vh
+      writing-mode: horizontal-tb
+      background: rgba(0, 0, 0, 0.8)
+      color: rgba(255, 255, 255, 1)
+      word-wrap: break-word
+      overflow-wrap: break-word
+      overflow: hidden
+
+    &::-webkit-media-text-track-region-container
+      position: relative
+      display: flex
+      flex-flow: column
+      flex-direction: column
+
+    &::-webkit-media-text-track-background
+      background-color: grey
+    
+    &::-webkit-media-text-track-display
+      position: absolute
+      overflow: hidden
+      white-space: pre-wrap
+      -webkit-box-sizing: border-box
+      flex: 0 0 auto
+
+    &::cue(:future)
+      color: gray
+
+    &::cue
+      display: inline
+      background-color: rgba(0, 0, 0, 0.8)
+      padding: 2px 2px
+      

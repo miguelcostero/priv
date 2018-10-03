@@ -1,0 +1,81 @@
+$spinner-dimensions: 50px
+$spinner-3-bg: #0CCA4A
+=position-absolute ($top: null, $left: null, $right: null, $bottom: null)
+  position: absolute
+  top: $top
+  left: $left
+  right: $right
+  bottom: $bottom
+
+.Container
+  position: fixed
+  top: 0
+  left: 0
+  z-index: 1000000
+  background: rgba(#1d1d1d, .8)
+  width: 100vw
+  height: 100vh
+
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-wrap: wrap
+
+  .Block
+    width: $spinner-dimensions
+
+    .Eff
+      position: relative
+      width: $spinner-dimensions
+      height: $spinner-dimensions
+
+      &:before,&:after 
+        content: ""
+        display: block
+
+      .circle
+        border-radius: 100px
+        @include position-absolute($left: 0, $right: 0)
+        margin: auto
+        transform: scale(1)
+        transform-origin: center center
+        
+        &:nth-child(1)
+          width: 100%
+          height: 100%
+          background-color: lighten($spinner-3-bg, 25%)
+          top: 0
+          animation: pulse 1.6s linear 0s infinite
+        
+        &:nth-child(2)
+          width: 66.6%
+          height: 66.6%
+          background-color: $spinner-3-bg
+          top: 16.5%
+          animation: pulse-2 1.6s linear 0s infinite
+        
+        &:nth-child(3)
+          width: 33.3%
+          height: 33.3%
+          background-color: $spinner-3-bg
+          top: 33.3%
+
+@keyframes pulse
+  0%
+    transform: scale(0)
+  
+  50%
+    transform: scale(1.3)
+    opacity: 0
+  
+  100%
+    transform: scale(1.3)
+    opacity: 0
+
+@keyframes pulse-2
+  0%
+    transform: scale(0)
+  
+  100%
+    transform: scale(1.3)
+    opacity: 0

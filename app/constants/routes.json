@@ -1,0 +1,5 @@
+{
+  "HOME": "/",
+  "MOVIE_DETAILS": "/movie/:id",
+  "PLAYER": "/player/:hash"
+}
